@@ -1,0 +1,11 @@
+depricated/
+Hists/
+imgs/
+.vscode/
+
+*.d
+*.so
+*.pcm
+
+*.root
+
