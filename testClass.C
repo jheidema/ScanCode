@@ -24,6 +24,7 @@ void testClass::Loop()
    scanTree->Branch("cloverE",&cloverE);
    scanTree->Branch("cloverNum",&cloverNum);
    scanTree->Branch("g1560",&g1560,"g1560/O"); 
+   scanTree->Branch("g853",&g853,"g853/O"); 
    
    Double_t prs[6] = {6611.09,2.5873,0.498726,-0.000406763,9.13781e-07,1.09327e-09};
    SetParameters(prs);
