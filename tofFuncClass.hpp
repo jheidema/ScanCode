@@ -16,17 +16,18 @@ class tofFuncClass {
     tofFuncClass();
     ~tofFuncClass();
     void Clear();
-    void InsertFunction(double t0, double amp, double sigE = 0.0);
+    void InsertFunction(double t0, double amp=1000, double sigE = 0.0);
     void SetParams(double *p);
     void SetParams(int iF, double *p);
     void SetParam(int iF, int iP, double p);
     //void RemoveFunction();
     double operator() (double *x, double *p){
-        SetParams(p);
+        //SetParams(p);
         double res = 0.0;
-        double off = p[nFuncs*3];
-        for (int i=0; i<nFuncs; i++){
-            pArray[0] = p[i*3]; pArray[1] = p[i*3+1]; pArray[2] = p[i*3+2];
+        Int_t nF = p[0];
+        double off = p[nF*3+1];
+        for (int i=0; i<nF; i++){
+            pArray[0] = p[i*3+1]; pArray[1] = p[i*3+2]; pArray[2] = p[i*3+3];
             res += calcResponse(x,pArray);
         } 
         return res + off;   
