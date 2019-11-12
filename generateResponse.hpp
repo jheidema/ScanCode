@@ -4,6 +4,7 @@
 void generateResponse(TH1F *hIn, Bool_t kFit=false){
 
     double t0;
+    hIn->GetListOfFunctions()->Clear();
     //double yMax = hIn->GetBinContent(hIn->GetMaximumBin());
     //double upperX = hIn->GetBinCenter(hIn->GetNbinsX());
     TF1 *fTOF = new TF1("fTOF",nResponse,0,1000,11);
