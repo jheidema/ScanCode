@@ -5,7 +5,7 @@ double calcResponse(double *xx, double* p){
     double X = xx[0];
     double t0 = p[0];
     double AA = p[1];
-    double sigE = p[2];
+    //double sigE = p[2];
     //double off = p[3];
 
     double a0 = 0.1667 + (-0.00141)*t0 + (5.27e-6)*t0*t0;
@@ -18,8 +18,14 @@ double calcResponse(double *xx, double* p){
     double k3 = 0.00335 + (2.108e-4)*t0 - (6.485e-7)*t0*t0;
     double d3 = 320.057 - 2.324*t0 + 0.00441*t0*t0;
     
+    double sigE = 0.75*(283600*t0*t0-1663115*t0+681358889)*1.E-9;
     sig0 = sqrt(sig0*sig0+sigE*sigE);
     sig1 = sqrt(sig1*sig1+sigE*sigE);
+
+    k1=0.7*k1;
+    d1=0.8*d1;
+    k2=1.*k2;
+    d2=1.5*d2;
 
     double b1 = exp(k1*(k1+d1))/(1+pow(k1+d1,2));
     double b2 = exp(k1*(k1+d1)-(k1-k2)*(k2+d2))/(1+pow(k1+d1,2));
