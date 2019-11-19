@@ -2,7 +2,9 @@
 #include <cmath>
 #include <vector>
 
+#ifndef calcResponse_hpp
 #include "calcResponse.hpp"
+#endif
 
 using namespace std;
 
@@ -26,12 +28,12 @@ class tofFuncClass {
         //SetParams(p);
         double res = 0.0;
         Int_t nF = p[0];
-        //double off = p[nF*3+1];
+        double off = p[nF*npars+1];
         for (int i=0; i<nF; i++){
             for (int in=1; in<=npars; in++){pArray[in-1] = p[i*npars+in];}// pArray[1] = p[i*npars+2];// pArray[2] = p[i*3+3];
             res += calcResponse(x,pArray);
         } 
-        return res;// + off;   
+        return res + off;   
     };
 };
 

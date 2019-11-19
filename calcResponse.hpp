@@ -1,6 +1,8 @@
 #include <cmath>
 #include <iostream>
 
+#define calcResponse_hpp
+
 double calcResponse(double *xx, double* p){
     double X = xx[0];
     double t0 = p[0];
@@ -11,18 +13,18 @@ double calcResponse(double *xx, double* p){
     double a0 = 0.1667 + (-0.00141)*t0 + (5.27e-6)*t0*t0;
     double sig0 = 0.2594 + (0.000699)*t0 + 0.000202*t0*t0;
     double sig1 = -0.139 + 0.0242*t0;
-    double k1 = 0.1819 - 0.000118*t0 + (4.215e-6)*t0*t0;
+    double k1 = 0.1819 - 0.000118*t0 + (8.215e-6)*t0*t0;
     double d1 = 75.41/(t0+17.70)+1.878;
     double k2 = 0.0162 - (4.797e-5)*t0 + (1.887e-6)*t0*t0;
     double d2 = 8.684 + 0.1331*t0 - (3.685e-4)*t0*t0;
     double k3 = 0.00335 + (2.108e-4)*t0 - (6.485e-7)*t0*t0;
     double d3 = 320.057 - 2.324*t0 + 0.00441*t0*t0;
     
-    double sigE = 0.7*(283600*t0*t0-1663115*t0+681358889)*1.E-9;
-    sig0 = sqrt(sig0*sig0+sigE*sigE);
-    sig1 = sqrt(sig1*sig1+sigE*sigE);
+    double sigE = 0.9*(283600/2.*t0*t0-1663115*t0+681358889)*1.E-9;
+    sig0 = sqrt(sig0*sig0+0.75*sigE*sigE);
+    sig1 = sqrt(sig1*sig1+1.*sigE*sigE);
 
-    k1=0.5*k1;
+    k1=0.4*k1;
     d1=0.8*d1;
     k2=1.5*k2;
     d2=2.1*d2;

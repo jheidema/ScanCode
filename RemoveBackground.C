@@ -1,19 +1,25 @@
 #include "dummyFuncs.h"
+#include "TH1F.h"
+#include "TF1.h"
 
-void RemoveBackground(TH1F *hIn, Bool_t kHyp=false){
+
+void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
+    
     TF1 *hbk = new TF1("hbk",hypBkgd,-50,800,5);
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,6);
     
     if(kHyp){
         /// Fitting the hyperbolic bkgd
-        hbk->SetParLimits(0,-15,-5);
+        hbk->SetParLimits(0,-15,-1);
         hbk->SetParLimits(1,0.2,3);
         hbk->SetParLimits(2,0.2,3);
         hbk->SetParLimits(3,325,425);
-        hbk->SetParLimits(4,13500,14500);
-        hIn->Fit(hbk,"","",200,600);
+        //hbk->SetParLimits(4,13500,14500);
+        hIn->Fit(hbk,"N","",200,600);
     }
-    
+    //hIn->Draw();
+    //hbk->Draw("same");
+   
     /// Create bkgd histogram
     Int_t nbins = hIn->GetNbinsX();
     Double_t xmin = hIn->GetXaxis()->GetXmin();
@@ -69,6 +75,9 @@ void RemoveBackground(TH1F *hIn, Bool_t kHyp=false){
         else YY = yy - gy;
         hIn->SetBinContent(ib,YY);
     }
+    hIn->SetMarkerStyle(21);
+    hIn->SetMarkerSize(1.5);
 
+    hIn->Draw("hist");
     return;
 }

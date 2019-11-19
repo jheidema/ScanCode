@@ -47,6 +47,10 @@ void FitSpectrum(TH1F *hIn, const char *fileName){
     f1->SetLineColor(kBlack);
 
     hIn->GetListOfFunctions()->Clear();
+    hIn->GetXaxis()->UnZoom();
+    hIn->GetYaxis()->UnZoom();
+    hIn->SetLineColor(kGreen);
+    hIn->SetLineWidth(3);
 
     Double_t t0;
     
@@ -55,7 +59,7 @@ void FitSpectrum(TH1F *hIn, const char *fileName){
         t0 = sqrt(1./2.*mn/en)/c*1.0E9;
         if(stInfo.at(iv).second == 1) {
             f1->SetParameter(iv*npars+1,t0); 
-            f1->SetParLimits(iv*npars+1,t0-3.0,t0+3.0);
+            f1->SetParLimits(iv*npars+1,t0-1.5,t0+1.5);
         } else f1->FixParameter(iv*npars+1,t0);
         
         f1->SetParameter(iv*npars+2,10); //f1->SetParameter(iv*npars+3,0.5);
