@@ -56,6 +56,7 @@ public :
    Int_t       nEntry;
    Bool_t      g1560;
    Bool_t      g853;
+   Bool_t      g2004;
    Double_t    nToF;
    Double_t    En;
    Double_t    Qdc;
@@ -175,6 +176,7 @@ void testClass::ZeroRootStruc(){
   cloverNum.clear();
   g1560 = false;
   g853 = false;
+  g2004 = false;
   nEntry = 0;
 }
 void testClass::ZeroVandStruc(){
@@ -195,6 +197,7 @@ void testClass::CopyRootStruc(){
       cloverNum.push_back(f_clover_vec_.At(ic).detNum);
       if( cEnergy>1558 && cEnergy<1564 ) g1560=true;
       if( cEnergy>850 && cEnergy<857) g853=true;
+      if( cEnergy>2002 && cEnergy<2005) g2004=true;
     }
 
    //Copy Event Number for nToF multiplicity.

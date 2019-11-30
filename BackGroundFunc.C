@@ -6,9 +6,9 @@
 #include "TF1.h"
 
 
-void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
+TF1* GenerateBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
     
-    TF1 *hbk = new TF1("hbk",hypBkgd,-50,800,5);
+    TF1 *hbk = new TF1("hbk",hypBkgd,-100,800,5);
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,6);
     hIn->GetXaxis()->UnZoom();
     hIn->GetYaxis()->UnZoom();
@@ -48,7 +48,7 @@ void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
         /// Subtract bkgd histogram
         //hIn->Sumw2();
         //hb->Sumw2();
-        hIn->Add(hb,-0.9);
+        hIn->Add(hb,-0.85);
         //hb->Draw("same");
         //return;
 
@@ -57,6 +57,7 @@ void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
         hb->Delete(); //delete bkgd histogram
     }
 //return;
+   if(true){
     gbk->SetParLimits(0,3,4);
     gbk->SetParLimits(1,100,1E5);
     gbk->SetParLimits(2,0,5);
@@ -70,27 +71,18 @@ void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
     Double_t offset = gbk->GetParameter(5)-25.0*gbk->GetParError(5);
     cout << offset << endl;
     gbk->FixParameter(5,offset);
-    //gbk->FixParameter(5,250);
-    
-    hIn->Fit(gbk,"N","",3,35);
-    hIn->Draw("hist");
-    gbk->Draw("same");
-return;
-    double xx, yy;
-    double gy;
-    UInt_t YY;
-    for (int ib=1; ib<=nbins; ib++){
-        xx=hIn->GetBinCenter(ib); yy=hIn->GetBinContent(ib);
-        gy=gbk->Eval(xx);
-        if(xx<0) YY = 0;
-        else if(yy<gy) YY = 0;
-        else YY = yy - gy;
-        hIn->SetBinContent(ib,YY);
-    }
-    hIn->SetMarkerStyle(21);
-    hIn->SetMarkerSize(1.5);
+    //gbk->FixParameter(5,gbk->GetParameter(5));
 
-    hIn->Draw("hist");
+    hIn->Fit(gbk,"N","",3,35);
+//    hIn->Draw("hist");
 //    gbk->Draw("same");
-    return;
+//return;
+   }
+    TF1 *fbkgd = new TF1("fbkgd",FullBkgd,-100,800,11);
+    for (int ig=0;ig<11;ig++){
+        if(ig<6) fbkgd->SetParameter(ig,gbk->GetParameter(ig));
+        if(ig>=6&&ig<11) fbkgd->SetParameter(ig,hbk->GetParameter(ig-6));
+    }
+    fbkgd->SetParameter(5,0);
+    return fbkgd;
 }

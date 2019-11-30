@@ -6,6 +6,8 @@
 #include "calcResponse.hpp"
 #endif
 
+#define tofFuncClass_hpp
+
 using namespace std;
 
 class tofFuncClass {

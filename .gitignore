@@ -9,3 +9,5 @@ imgs/
 
 *.root
 
+.rootlogon.C
+clean.sh

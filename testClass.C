@@ -25,27 +25,26 @@ void testClass::Loop()
    scanTree->Branch("cloverNum",&cloverNum);
    scanTree->Branch("g1560",&g1560,"g1560/O"); 
    scanTree->Branch("g853",&g853,"g853/O"); 
-   
+   scanTree->Branch("g2004",&g2004,"g2004/O"); 
+
    Double_t prs[6] = {6611.09,2.5873,0.498726,-0.000406763,9.13781e-07,1.09327e-09};
    SetParameters(prs);
    Bool_t gEvent=false;
    Long64_t nentries = fReader.GetEntries(true);
 
    while(fReader.Next()){
-     Bool_t goodEvent = false;
-     g1560=false;
-     nEntry=0;
-     if(nEvent%5000==0) cout<<"\rComputing Entry " << nEvent << " of " << nentries << flush;
+      Bool_t goodEvent = false;
+      if(nEvent%5000==0) cout<<"\rComputing Entry " << nEvent << " of " << nentries << flush;
      
      CopyRootStruc();
       
-     if(f_vandle_vec_.GetSize()>0){
-      for (int iv = 0; iv < f_vandle_vec_.GetSize(); iv++){
+      if(f_vandle_vec_.GetSize()>0){
+       for (int iv = 0; iv < f_vandle_vec_.GetSize(); iv++){
          goodEvent = Analyze(iv);
          if(goodEvent) {nEntry++; scanTree->Fill();}
          ZeroVandStruc();
+       }
       }
-     }
      ZeroRootStruc();
      nEvent++;
      //if (nEvent==1000) break;
@@ -56,15 +55,8 @@ void testClass::Loop()
 }
 
 Bool_t testClass::Analyze(Int_t iv){
-  /* Bool_t goodEvent = false;
-  g1560=false;
-  if(entry!=-1) GetEntry(entry);
-  CopyRootStruc(); */
 
   if (iv<0) return false;
-  /* if(f_vandle_vec_.GetSize()>0){
-     goodEvent = true;
-     for (int iv = 0; iv < f_vandle_vec_.GetSize(); iv++){ */
          double oToF = f_vandle_vec_.At(iv).corTof;
          Qdc = f_vandle_vec_.At(iv).qdc;
          if(oToF>-100&&oToF<1000){
@@ -80,8 +72,5 @@ Bool_t testClass::Analyze(Int_t iv){
          } else {
             ZeroVandStruc(); return false;
          }
-     /*} 
-  }
-   ZeroRootStruc(); */
-  //return goodEvent;
+  return goodEvent;
 }

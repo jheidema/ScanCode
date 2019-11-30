@@ -21,8 +21,8 @@ double calcResponse(double *xx, double* p){
     double d3 = 320.057 - 2.324*t0 + 0.00441*t0*t0;
     
     double sigE = 0.9*(283600/2.*t0*t0-1663115*t0+681358889)*1.E-9;
-    sig0 = sqrt(sig0*sig0+0.75*sigE*sigE);
-    sig1 = sqrt(sig1*sig1+1.*sigE*sigE);
+    sig0 = 1.*sqrt(sig0*sig0+0.75*sigE*sigE);
+    sig1 = 1.*sqrt(sig1*sig1+1.*sigE*sigE);
 
     k1=0.4*k1;
     d1=0.8*d1;
