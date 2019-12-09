@@ -41,7 +41,8 @@ public :
    TTreeReaderArray<processor_struct::PSPMT>       f_pspmt_vec_ = {fReader,"pspmt_vec_"};
    TTreeReaderArray<processor_struct::ROOTDEV>     f_root_dev_vec_ = {fReader,"root_dev_vec_"};
    TTreeReaderArray<processor_struct::VANDLES>     f_vandle_vec_ = {fReader,"vandle_vec_"};
-   
+   TTreeReaderArray<processor_struct::NEXTS>       f_next_vec_ = {fReader,"next_vec_"};
+
    TTreeReaderValue<UInt_t>      fUniqueID    = {fReader, "fUniqueID"};
    TTreeReaderValue<UInt_t>      fBits        = {fReader, "fBits"};
    TTreeReaderValue<ULong64_t>   externalTS1  = {fReader,"externalTS1"};
@@ -50,6 +51,8 @@ public :
    TTreeReaderValue<string>      fileName     = {fReader,"fileName"};
    
    TF1 *fCorr;
+   TF1 *fQuench;
+   TF1 *fQDC;
    Double_t *pars;
    
    Long64_t    nEvent = 0;
@@ -57,7 +60,8 @@ public :
    Bool_t      g1560;
    Bool_t      g853;
    Bool_t      g2004;
-   Double_t    nToF;
+   Bool_t      gBirk;
+   Double_t    nToF, oToF;
    Double_t    En;
    Double_t    Qdc;
    Int_t       barNum;
@@ -84,7 +88,7 @@ public :
    virtual void      ZeroRootStruc();
    virtual void      ZeroVandStruc();
    virtual void      CopyRootStruc();
-   virtual void      SetParameters(Double_t *p); 
+   virtual void      SetParameters(Double_t *p1, Double_t *p2, Double_t *p3); 
    virtual Double_t  WCorrToF(Double_t iToF, Double_t qdc);
    virtual Double_t  CalculateEnergy(Double_t tof);
 };
@@ -112,6 +116,8 @@ testClass::~testClass()
    if (!fChain) return;
    delete fChain->GetCurrentFile();
    fCorr->Delete();
+   fQuench->Delete();
+   fQDC->Delete();
 }
 
 Int_t testClass::GetEntry(Long64_t entry)
@@ -138,7 +144,8 @@ void testClass::Init(TTree *tree)
    fReader.SetTree(tree);
 
    fCorr = new TF1("fCorr",tofWcorr,0,35000,6);
-
+   fQuench = new TF1("fQuench",MadeyQ,0,20,4);
+   fQDC = new TF1("fQDC","[0]+[1]*x",0,20);
    Notify();
 }
 
@@ -177,10 +184,12 @@ void testClass::ZeroRootStruc(){
   g1560 = false;
   g853 = false;
   g2004 = false;
+  gBirk =  false;
   nEntry = 0;
 }
 void testClass::ZeroVandStruc(){
   nToF   = -9999;
+  oToF   = -9999;
   En     = -9999;
   barNum = -9999;
   Qdc    = -9999;
@@ -203,9 +212,13 @@ void testClass::CopyRootStruc(){
    //Copy Event Number for nToF multiplicity.
    Double_t nEvent = *eventNum;
 }
-void testClass::SetParameters(Double_t *p){
-  fCorr->SetParameters(p);
+
+void testClass::SetParameters(Double_t *p1, Double_t *p2, Double_t *p3){
+  fCorr->SetParameters(p1);
+  fQuench->SetParameters(p2);
+  fQDC->SetParameters(p3);
 }
+
 Double_t testClass::WCorrToF(Double_t iToF, Double_t qdc){
   if(iToF<-100) return -9999;
   double corr = fCorr->Eval(qdc);
@@ -213,11 +226,12 @@ Double_t testClass::WCorrToF(Double_t iToF, Double_t qdc){
   if (newToF<-200&&newToF>=1000) return -9999;
   else return newToF;
 }
+
 Double_t testClass::CalculateEnergy(Double_t tof){
   double energy;
   if (tof>0){
     if(tof>4) 
-      energy = 0.5 * mN * pow(100./tof/29.98,2);
+      energy = 0.5 * mN * pow(100./tof/29.98,2); // MeV/c^2
     else 
       energy = -500;
   }

@@ -60,7 +60,7 @@ TF1* SpectrumFunc(Int_t nPeaks, Double_t *x, Double_t *y, Double_t offset=0.0, D
 
 TF1* SpectrumFunc(const char *filename, Double_t offset=0.0, Bool_t kFit=false){
 
-    LoadInput(filename, true);
+    LoadInput(filename, false);
     
     Int_t nPeaks = stInfo.size();
     tofFuncClass tf;

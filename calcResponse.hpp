@@ -20,6 +20,11 @@ double calcResponse(double *xx, double* p){
     double k3 = 0.00335 + (2.108e-4)*t0 - (6.485e-7)*t0*t0;
     double d3 = 320.057 - 2.324*t0 + 0.00441*t0*t0;
     
+        //hi-res
+    /* double sigE = 0.7*(283600/2.*t0*t0-1663115*t0+681358889)*1.E-9;
+    sig0 = 0.8*sqrt(sig0*sig0+0.65*sigE*sigE);
+    sig1 = 1.*sqrt(sig1*sig1+1.*sigE*sigE); */
+        //low-res
     double sigE = 0.9*(283600/2.*t0*t0-1663115*t0+681358889)*1.E-9;
     sig0 = 1.*sqrt(sig0*sig0+0.75*sigE*sigE);
     sig1 = 1.*sqrt(sig1*sig1+1.*sigE*sigE);

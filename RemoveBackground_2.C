@@ -8,55 +8,54 @@
 
 void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
     
-    TF1 *hbk = new TF1("hbk",hypBkgd,-50,800,5);
+    TF1 *pbk = new TF1("pbk",pieceBkgd,-100,800,4);
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,6);
     hIn->GetXaxis()->UnZoom();
     hIn->GetYaxis()->UnZoom();
 
     if(kHyp){
         /// Fitting the hyperbolic bkgd
-        hbk->SetParLimits(0,-15,-5);
-        hbk->SetParLimits(1,0.2,3);
-        hbk->SetParLimits(2,0.2,3);
-        hbk->SetParLimits(3,325,425);
-        //hbk->SetParLimits(4,13500,14500);
-        hIn->Fit(hbk,"N","",250,600);
+        pbk->SetParLimits(0,325,425);
+        hIn->Fit(pbk,"N","",200,600);
     }
-    hbk->SetParameter(0,hbk->GetParameter(0)*1.3);
-    hIn->Draw();
-    hbk->Draw("same");
-return;
+    
+//    hIn->Draw();
+//    pbk->Draw("same");
+//return;
     /// Create bkgd histogram
     Int_t nbins = hIn->GetNbinsX();
     Double_t xmin = hIn->GetXaxis()->GetXmin();
     Double_t xmax = hIn->GetXaxis()->GetXmax();
 
     if(kHyp){
-        Double_t hb_int = hbk->Integral(xmin,xmax);
+        Double_t pb_int = pbk->Integral(xmin,xmax);
 
-        TH1F *hb = new TH1F("hb","hb",nbins,xmin,xmax);
-        hb->FillRandom("hbk",hb_int*2);
+        TH1F *pb = new TH1F("pb","pb",nbins,xmin,xmax);
+        pb->FillRandom("pbk",pb_int*2);
 
         /// Scaling bkgd histogram
-        Int_t hbk_max_bin = hb->GetBinCenter(hb->FindBin(hbk->GetParameter(3)));
-        hb_int = hb->Integral(hbk_max_bin-50,hbk_max_bin+50);
-        Double_t hIn_int = hIn->Integral(hbk_max_bin-50,hbk_max_bin+50);
-        Double_t scale = hIn_int/hb_int;
-        hb->Scale(scale);
+        Int_t pbk_max_bin = pb->GetBinCenter(pb->FindBin(pbk->GetParameter(0)));
+        pb_int = pb->Integral(pbk_max_bin-50,pbk_max_bin+50);
+        Double_t hIn_int = hIn->Integral(pbk_max_bin-50,pbk_max_bin+50);
+        Double_t scale = hIn_int/pb_int;
+        pb->Scale(scale);
         std::cout << scale << std::endl;
 
         /// Subtract bkgd histogram
         //hIn->Sumw2();
-        //hb->Sumw2();
-        hIn->Add(hb,-0.9);
-        //hb->Draw("same");
+        //pb->Sumw2();
+        hIn->Add(pb,-0.9);
+        //hIn->Draw();
+        //pb->Draw("same");
+        //pbk->Draw("same");
         //return;
 
 
         //for (int ib=1; ib<=nbins; ib++){ if(hIn->GetBinContent(ib)<0) hIn->SetBinContent(ib,0);}
-        hb->Delete(); //delete bkgd histogram
+        pb->Delete(); //delete bkgd histogram
     }
-//return;
+return;
+
     gbk->SetParLimits(0,3,4);
     gbk->SetParLimits(1,100,1E5);
     gbk->SetParLimits(2,0,5);

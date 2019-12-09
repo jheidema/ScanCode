@@ -18,9 +18,10 @@ class FullFuncClass {
     public:
         Int_t nFuncs=0;
         static const int npars = 2;
+        int nBP = 0;
         vector<double> params;
         Double_t pArray[npars];
-        Double_t bArray[11];
+        Double_t *bArray;
         Bool_t kFit = false;    
 
     //FullFuncClass();
@@ -33,17 +34,18 @@ class FullFuncClass {
     void SetParam(int iF, int iP, double p);
     Bool_t SetFitBool(Bool_t rFit){kFit = rFit; return kFit;};
     Int_t GetNFuncs() {return nFuncs;};
-    void GetFuncParams(int iF){cout << params.at(11+iF*2) << " " << params.at(11+1+iF*2)<< endl;};
-    
+    void GetFuncParams(int iF){cout << params.at(nBP+iF*2) << " " << params.at(nBP+1+iF*2)<< endl;};
+    void GetBkgdParams(){for (int i=0; i<nBP; i++) cout << i << " " << params.at(i) << endl;};
     //void RemoveFunction();
     double operator() (double *x, double *p){
         if(kFit) SetParams(p);
         Double_t res = 0.;
-        for(int in=0;in<11;in++) bArray[in] = params.at(in);
+        //Double_t bArray[nP];
+        //for(int in=0;in<nP;in++) bArray[in] = params.at(in);
             res = FullBkgd(x,bArray);
 
         for (int i=0; i<nFuncs; i++){
-            for (int in=0; in<npars; in++) pArray[in] = params.at(11+i*npars+in);
+            for (int in=0; in<npars; in++) pArray[in] = params.at(nBP+i*npars+in);
             res += calcResponse(x,pArray);
         } 
         return res;   
@@ -51,6 +53,8 @@ class FullFuncClass {
 };
 
 FullFuncClass::FullFuncClass(int nP, double *initP){
+    nBP = nP;
+    bArray = initP;
     for(int ip=0;ip<nP;ip++){
         params.push_back(initP[ip]);
     }
@@ -69,18 +73,18 @@ void FullFuncClass::InsertFunction(double t0, double amp){
 
 void FullFuncClass::SetParams(double *p){
     for(int ip=0; ip<nFuncs*npars; ip++){
-        params.at(ip+11) = p[ip];
+        params.at(ip+nBP) = p[ip];
     }
 }
 
 void FullFuncClass::SetParams(int iF, double *p){
     for(int ip=0; ip<npars; ip++){
-        params.at(ip+(iF*npars)+11) = p[ip];
+        params.at(ip+(iF*npars)+nBP) = p[ip];
     }
 }
 
 void FullFuncClass::SetParam(int iF, int iP, double p){
-    params.at(iP+iF*npars+11) = p;
+    params.at(iP+iF*npars+nBP) = p;
 }
 
 void FullFuncClass::Clear(){

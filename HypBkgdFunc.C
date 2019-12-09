@@ -6,7 +6,7 @@
 #include "TF1.h"
 
 
-TF1* GenerateBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
+TF1* GenerateHypBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
     
     TF1 *hbk = new TF1("hbk",hypBkgd,-100,800,5);
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,6);
