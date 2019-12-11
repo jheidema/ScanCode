@@ -2,6 +2,7 @@ depricated/
 Hists/
 imgs/
 .vscode/
+*_files/
 
 *.d
 *.so

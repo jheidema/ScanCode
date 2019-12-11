@@ -67,33 +67,36 @@ double gammaBkgd(double *x, double *p){
     Double_t p3 = p[3]; 
     Double_t p4 = p[4];
     Double_t p5 = p[5];
+    Double_t p6 = p[6];
 
-    return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5;
+    if(xx>25&&xx<200) TF1::RejectPoint();
+    return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p6))+p5;
+    //return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5;
 }
 
 double FullBkgd(double *x, double *p){
     Double_t xx = x[0];
     //Gamma Bkgd Params
-    Double_t p0 = p[0]; 
-    Double_t p1 = p[1]; 
-    Double_t p2 = p[2]; 
-    Double_t p3 = p[3]; 
-    Double_t p4 = p[4];
-    Double_t p5 = p[5];
-    //Hyp Bkgd Params
-    Double_t p6 = p[6]; 
-    Double_t p7 = p[7]; 
-    Double_t p8 = p[8]; 
-    Double_t p9 = p[9]; 
-    Double_t p10 = p[10]; 
+    //Double_t p0 = p[0]; 
+    //Double_t p1 = p[1]; 
+    //Double_t p2 = p[2]; 
+    //Double_t p3 = p[3]; 
+    //Double_t p4 = p[4];
+    //Double_t p5 = p[5];
+    ////Hyp Bkgd Params
+    //Double_t p6 = p[6]; 
+    //Double_t p7 = p[7]; 
+    //Double_t p8 = p[8]; 
+    //Double_t p9 = p[9]; 
+    //Double_t p10 = p[10]; 
 
     Double_t y;
     if(xx<2||xx>900) { y = 0.; TF1::RejectPoint();}
-    else y = gammaBkgd(x,p) + pieceBkgd(x,&p[6]);
+    else y = gammaBkgd(x,p) + pieceBkgd(x,&p[7]);
     //else y = gammaBkgd(x,p) + hypBkgd(x,&p[6]);
     //else y = p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5 + p6*cosh(p7*asinh(p8*(xx-p9)))+p10;
 
-    if(xx>35&&xx<175) TF1::RejectPoint();
+    if(xx>20&&xx<200) TF1::RejectPoint();
 
     return y;
 }
