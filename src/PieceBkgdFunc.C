@@ -9,7 +9,7 @@
 TF1* GeneratePieceBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
 
     TF1 *pbk = new TF1("pbk",pieceBkgd,-100,800,4);
-    TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,6);
+    TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,7);
     hIn->GetXaxis()->UnZoom();
     hIn->GetYaxis()->UnZoom();
 
@@ -44,7 +44,7 @@ TF1* GeneratePieceBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
         /// Subtract bkgd histogram
         //hIn->Sumw2();
         //pb->Sumw2();
-        hIn->Add(pb,-0.85);
+        hIn->Add(pb,-0.9);
         //hIn->Draw();
         //pb->Draw("same");
         //pbk->Draw("same");
@@ -63,27 +63,29 @@ TF1* GeneratePieceBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
     gbk->SetParLimits(3,100,1E6);
     gbk->SetParLimits(4,0,5);
     gbk->SetParLimits(5,-1000,1000);
+    gbk->SetParLimits(6,0,5);
 
-    hIn->Fit(gbk,"N","",3,32);
-    hIn->Fit(gbk,"N","",250,400);
+    hIn->Fit(gbk,"N","",3,20);
+    //hIn->Fit(gbk,"N","",250,400);
     
     //Double_t offset = gbk->GetParameter(5)-25.0*gbk->GetParError(5);
     //cout << offset << endl;
     //gbk->FixParameter(5,offset);
-    gbk->FixParameter(5,gbk->GetParameter(5));
+    //gbk->FixParameter(5,gbk->GetParameter(5));
 
-    hIn->Fit(gbk,"N","",3,35);
+    hIn->Fit(gbk,"N","",3,700);
 //    hIn->Draw("hist");
 //    gbk->Draw("same");
 //return;
-
-    Int_t nPars = gbk->GetNpar() + pbk->GetNpar();
+    Int_t nPgbk = gbk->GetNpar();
+    Int_t nPpbk = pbk->GetNpar();
+    Int_t nPars = nPgbk + nPpbk;
 
     TF1 *fbkgd = new TF1("fbkgd",FullBkgd,-100,800,nPars);
     for (int ig=0;ig<nPars;ig++){
-        if(ig<6) fbkgd->SetParameter(ig,gbk->GetParameter(ig));
-        if(ig>=6&&ig<11) fbkgd->SetParameter(ig,pbk->GetParameter(ig-6));
+        if(ig<nPgbk) fbkgd->SetParameter(ig,gbk->GetParameter(ig));
+        if(ig>=nPgbk&&ig<nPars) fbkgd->SetParameter(ig,pbk->GetParameter(ig-6));
     }
-    fbkgd->SetParameter(5,0);
+    //fbkgd->SetParameter(5,0);
     return fbkgd;
 }

@@ -22,7 +22,7 @@ void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
         //hbk->SetParLimits(4,13500,14500);
         hIn->Fit(hbk,"N","",250,600);
     }
-    hbk->SetParameter(0,hbk->GetParameter(0)*1.3);
+    //hbk->SetParameter(0,hbk->GetParameter(0)*1.3);
     hIn->Draw();
     hbk->Draw("same");
 return;

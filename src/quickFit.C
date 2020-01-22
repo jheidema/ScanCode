@@ -20,7 +20,7 @@ void quickFit(TH1F *hIn,Int_t nPeaks=1, Double_t offMax = 1.0, Bool_t kFix=false
     for(int i=0;i<nPeaks;i++){
         cout << "t0 location of " << i+1 << "th peak" << endl;
         cin >> t0;
-        if(!kFix){ f1->SetParameter(i*npars+1,t0); f1->SetParLimits(i*npars+1,t0-1,t0+1);} 
+        if(!kFix){ f1->SetParameter(i*npars+1,t0); f1->SetParLimits(i*npars+1.5,t0-1,t0+1.5);} 
         else f1->FixParameter(i*npars+1,t0);
         
         f1->SetParLimits(i*npars+2,0,Amax);

@@ -24,7 +24,7 @@ void LoadInput(const char *fileName, Bool_t kPrint=false){
         fin >> t0 >> An >> gamE;
         if(fin.eof()) break;
         Double_t effScale;
-        if (gamE>50.) effScale = 100./AbsHPGe_Eff(gamE);
+        if (gamE>50.) effScale = 100./AbsHPGe_Eff(gamE)*1.4;
         else effScale=1.0;
         stInfo.push_back(std::make_pair(t0, An*effScale));
         if(kPrint) cout << t0 << "\t"<< An << "\t" << gamE << "\t" << An*effScale << endl;

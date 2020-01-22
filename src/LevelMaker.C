@@ -45,7 +45,7 @@ void LevelMaker(const char *fileName){
         if(Etot>ymax) ymax = Etot;        
         ls[i] = new TLine(istate[state],Etot,istate[state]+1,Etot);
         if(stInfo.at(i).second==0.0) {ls[i]->SetLineWidth(3);  ls[i]->SetLineColor(kBlack);}
-        else{ls[i]->SetLineWidth(2); ls[i]->SetLineStyle(9);  ls[i]->SetLineColor(kBlue);}
+        else{ls[i]->SetLineWidth(2); ls[i]->SetLineStyle(2);  ls[i]->SetLineColor(kBlue);}
     }
 
     double xmax = istate[stLabels.at(stLabels.size()-1)]+1;
@@ -55,10 +55,11 @@ void LevelMaker(const char *fileName){
     TPad *p1 = new TPad("p1","",0,0,1,1);
     p1->Draw();
     p1->cd();
-    gPad->DrawFrame(0,0,xmax,ymax+5);
+    gPad->DrawFrame(0,0,xmax,ymax+2);
     gPad->GetFrame()->SetLineWidth(0);
     TH1F *hh = (TH1F*)p1->GetPrimitive("hframe");
     hh->GetXaxis()->SetLabelColor(kWhite);
+    hh->GetXaxis()->SetNdivisions(5,2,0);
     //p1->GetXaxis()->SetLabelColor(kWhite);    
     TPaveText *pt[3];
     for (int i=0;i<3;i++){pt[i] = new TPaveText(istate[stLabels.at(i)],-0.5,istate[stLabels.at(i)]+1,-2,"NB"); pt[i]->AddText(stLabels.at(i).c_str());}

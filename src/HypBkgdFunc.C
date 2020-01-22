@@ -43,7 +43,7 @@ TF1* GenerateHypBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
         Double_t hIn_int = hIn->Integral(hbk_max_bin-50,hbk_max_bin+50);
         Double_t scale = hIn_int/hb_int;
         hb->Scale(scale);
-        std::cout << scale << std::endl;
+        //std::cout << scale << std::endl;
 
         /// Subtract bkgd histogram
         //hIn->Sumw2();
@@ -69,7 +69,7 @@ TF1* GenerateHypBkgdFunc(TH1F * hIn, Bool_t kHyp=false){
     hIn->Fit(gbk,"N","",250,700);
     
     Double_t offset = gbk->GetParameter(5)-25.0*gbk->GetParError(5);
-    cout << offset << endl;
+    //cout << offset << endl;
     gbk->FixParameter(5,offset);
     //gbk->FixParameter(5,gbk->GetParameter(5));
 

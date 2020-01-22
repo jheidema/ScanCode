@@ -9,7 +9,7 @@
 void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
     
     TF1 *pbk = new TF1("pbk",pieceBkgd,-100,800,4);
-    TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,6);
+    TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,7);
     hIn->GetXaxis()->UnZoom();
     hIn->GetYaxis()->UnZoom();
 
@@ -54,7 +54,7 @@ void RemoveBackground(TH1F * hIn, Bool_t kHyp=false){
         //for (int ib=1; ib<=nbins; ib++){ if(hIn->GetBinContent(ib)<0) hIn->SetBinContent(ib,0);}
         pb->Delete(); //delete bkgd histogram
     }
-return;
+//return;
 
     gbk->SetParLimits(0,3,4);
     gbk->SetParLimits(1,100,1E5);
@@ -62,16 +62,18 @@ return;
     gbk->SetParLimits(3,100,1E6);
     gbk->SetParLimits(4,0,5);
     gbk->SetParLimits(5,-1000,1000);
+    gbk->SetParLimits(6,0,5);
 
-    hIn->Fit(gbk,"N","",3,32);
-    hIn->Fit(gbk,"N","",250,700);
+    hIn->Fit(gbk,"N","",3,20);
+    //hIn->Fit(gbk,"N","",250,700);
     
-    Double_t offset = gbk->GetParameter(5)-25.0*gbk->GetParError(5);
-    cout << offset << endl;
-    gbk->FixParameter(5,offset);
-    //gbk->FixParameter(5,250);
+    //Double_t offset = gbk->GetParameter(5)-25.0*gbk->GetParError(5);
+    //cout << offset << endl;
+    //gbk->FixParameter(5,offset);
+    //gbk->FixParameter(5,gbk->GetParameter(5));
     
-    hIn->Fit(gbk,"N","",3,35);
+    hIn->Fit(gbk,"N","",3,700);
+    //gbk->SetParameter(3,0);
     hIn->Draw("hist");
     gbk->Draw("same");
 return;

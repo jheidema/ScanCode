@@ -8,20 +8,26 @@
 
 TF1* BkgdFunc(TH1F * hIn, Bool_t kHyp=false){
     
-    TF1 *pbk = new TF1("pbk",pieceBkgd,-100,800,4);
+    TF1 *pbk;
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,7);
     hIn->GetXaxis()->UnZoom();
     hIn->GetYaxis()->UnZoom();
-
+    
+    Int_t nPgbk = 0;
+    Int_t nPpbk = 0;
+    Int_t nPars = 0;
+    
     if(kHyp){
+    
+        pbk = new TF1("pbk",pieceBkgd,-100,800,4);
         /// Fitting the hyperbolic bkgd
         pbk->SetParLimits(0,325,425);
         hIn->Fit(pbk,"N","",200,600);
+        nPpbk = pbk->GetNpar();
     }
     
-    Int_t nPgbk = gbk->GetNpar();
-    Int_t nPpbk = pbk->GetNpar();
-    Int_t nPars = nPgbk + nPpbk;
+     nPgbk = gbk->GetNpar();
+     nPars = nPgbk + nPpbk;
 
     TF1 *fbkgd = new TF1("fbkgd",FullBkgd,-100,800,nPars);
     fbkgd->SetParLimits(0,3,4);
@@ -37,7 +43,7 @@ TF1* BkgdFunc(TH1F * hIn, Bool_t kHyp=false){
         if(ig>=nPgbk&&ig<nPars) fbkgd->FixParameter(ig,pbk->GetParameter(ig-nPgbk));
     }
 
-    hIn->Fit(fbkgd,"N","",3,20);
+    hIn->Fit(fbkgd,"N","",3,30);
     hIn->Fit(fbkgd,"N","",3,700);
     
     //hIn->Draw("hist");
