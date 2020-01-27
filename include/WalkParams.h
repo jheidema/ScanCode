@@ -1,5 +1,13 @@
 #include "dummyFuncs.h"
 
+#include "TF1.h"
+#include "TH2F.h"
+#include "TGraphErrors.h"
+
+
+
+using namespace std;
+
 void WalkParams(TH2F *h){
 
     Double_t xmax = h->GetXaxis()->GetXmax();

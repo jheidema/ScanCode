@@ -1,13 +1,11 @@
-#include "tofFuncClass.hpp"
+#include <iostream>
+#include <fstream>
 
-#ifndef dummyFunc_h
+#include "tofFuncClass.hpp"
 #include "dummyFuncs.h"
-#endif
 
 #include "TF1.h"
 #include "TH1F.h"
-#include <iostream>
-#include <fstream>
 
 vector< pair<Double_t, Double_t>  > stInfo;
 const Double_t mn = 939.57; //MeV/c^2

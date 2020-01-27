@@ -7,8 +7,28 @@ imgs/
 *.d
 *.so
 *.pcm
+*.o
+*.a
+
+*.tar*
+*.gz
 
 *.root
+*.out
+*.dat
+
+*install*
+*build*
+
+#executables
+hfreader
+
+
+CMakeCache.txt
+CMakeFiles/
+*cmake*
+Makefile
+makefile
 
 .rootlogon.C
 clean.sh

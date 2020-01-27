@@ -2,13 +2,8 @@
 #include <cmath>
 #include <vector>
 
-#ifndef calcResponse_hpp
 #include "calcResponse.hpp"
-#endif
-#ifndef dummyFunc_h
 #include "dummyFuncs.h"
-#endif
-
 
 #define FullFuncClass_hpp
 
@@ -24,7 +19,7 @@ class FullFuncClass {
         Double_t *bArray;
         Bool_t kFit = false;    
 
-    //FullFuncClass();
+    FullFuncClass();
     FullFuncClass(int nP, double *initP);
     ~FullFuncClass();
     void Clear();
