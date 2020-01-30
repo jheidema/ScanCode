@@ -9,7 +9,7 @@
 #include "BkgdFunc.hpp"
 //#include "HypBkgdFunc.C"
 //#include "PieceBkgdFunc.C"
-//#include "SpectrumFunc.hpp"
+#include "SpectrumFunc.hpp"
 
 
 using namespace std;
@@ -31,16 +31,20 @@ void FullSpecFunc::GenerateSpecFunc(TH1F* hIn, bool kHyp){
     fB = BkgdFunc(hIn,kHyp);
     bArray = fB->GetParameters();
     nBP = fB->GetNpar();
+    cout << nBP << " background parameters\n";
     FullFuncClass tf(nBP,bArray);
+    tf.PrintBkgdParams();
+    
+    cout << "Opening " << filename << endl;
 
-    /* TF1 *fA = SpectrumFunc(filename,0.0,false);
+    TF1 *fA = SpectrumFunc(filename,0.0,false);
     nFuncs = fA->GetParameter(0);
 
     for (int iF=0; iF<nFuncs; iF++){
         double t = fA->GetParameter(iF*nrp+1);
         double a = fA->GetParameter(iF*nrp+2);
         tf.InsertFunction(t,a);
-    } */    
+    }    
 
     //std::cout << "Fully Loaded\n";
     //tf.GetBkgdParams();
@@ -48,6 +52,7 @@ void FullSpecFunc::GenerateSpecFunc(TH1F* hIn, bool kHyp){
 
     fOut = new TF1("fOut",tf,0,800,0);
     fOut->SetNpx(2000); 
+
     //if(kDraw) {hIn->Draw("hist");fOut->Draw("same");}
 
     cout << "Good here\n";

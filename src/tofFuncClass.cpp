@@ -2,7 +2,7 @@
 
 #ifdef TofFuncClass_hpp
 
-tofFuncClass::tofFuncClass(void){
+tofFuncClass::tofFuncClass(){
 }
 
 tofFuncClass::~tofFuncClass(){

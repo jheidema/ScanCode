@@ -4,17 +4,16 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 #include "tofFuncClass.hpp"
 #include "dummyFuncs.hpp"
 
 //#include "TF1.h"
 
+using namespace std;
 
 vector< pair<double, double>  > stInfo;
-const double mn = 939.57; //MeV/c^2
-const double c = 2.998E8;
-const int npars = 2;
 
 void LoadInput(const char *fileName, bool kPrint){
     stInfo.clear();
@@ -36,7 +35,7 @@ void LoadInput(const char *fileName, bool kPrint){
     return;
 }
 
-TF1* SpectrumFunc(int nPeaks, double *x, double *y, double offset=0.0, double gamma=0.0){
+TF1* SpectrumFunc(int nPeaks, double *x, double *y, double offset, double gamma){
 
     double scale;
 
@@ -62,7 +61,7 @@ TF1* SpectrumFunc(int nPeaks, double *x, double *y, double offset=0.0, double ga
 
 TF1* SpectrumFunc(const char *filename, double offset, bool kFit){
 
-    LoadInput(filename, false);
+    LoadInput(filename, true);
     
     int nPeaks = stInfo.size();
     tofFuncClass tf;

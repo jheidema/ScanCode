@@ -70,7 +70,7 @@ double gammaBkgd(double *x, double *p){
     double p5 = p[5];
     double p6 = p[6];
 
-    //if(xx>25&&xx<200) TF1::RejectPoint();
+    if(xx>25&&xx<200) TF1::RejectPoint();
     return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p6))+p5;
     //return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5;
 }

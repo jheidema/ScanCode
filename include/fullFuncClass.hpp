@@ -29,9 +29,13 @@ class FullFuncClass {
     void SetParams(int iF, double *p);
     void SetParam(int iF, int iP, double p);
     bool SetFitBool(bool rFit){kFit = rFit; return kFit;};
-    int GetNFuncs() {return nFuncs;};
-    void GetFuncParams(int iF){cout << params.at(nBP+iF*2) << " " << params.at(nBP+1+iF*2)<< endl;};
-    void GetBkgdParams(){for (int i=0; i<nBP; i++) cout << i << " " << params.at(i) << endl;};
+    int  GetNFuncs() {return nFuncs;};
+    int  GetNBP() {return nBP;};
+    void PrintFuncParams(int iF){cout << params.at(nBP+iF*2) << " " << params.at(nBP+1+iF*2)<< endl;};
+    void PrintBkgdParams(){for (int i=0; i<nBP; i++) cout << i << " " << params.at(i) << endl;};
+    
+    vector<double> GetParams(){return params;};
+
     //void RemoveFunction();
     double operator() (double *x, double *p){
         if(kFit) SetParams(p);

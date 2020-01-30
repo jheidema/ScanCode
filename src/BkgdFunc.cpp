@@ -13,7 +13,9 @@ TF1* BkgdFunc(TH1F * hIn, bool kHyp){
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,7);
     hIn->GetXaxis()->UnZoom();
     hIn->GetYaxis()->UnZoom();
-    
+    hIn->GetYaxis()->SetLimits(0,hIn->GetYaxis()->GetXmax());
+
+
     int nPgbk = 0;
     int nPpbk = 0;
     int nPars = 0;
