@@ -1,10 +1,13 @@
+#ifndef FileReader_hpp
+#define FileReader_hpp
+
 #include <iostream>
 #include <vector>
 #include <stdio.h>
 #include <fstream>
 #include <string>
 
-#define FileReader_hpp
+
 
 using namespace std;
 
@@ -15,12 +18,15 @@ class FileReader {
         virtual ~FileReader();
         //FileReader(char const *filename_);
         virtual bool Import();
+        virtual std::string GetLine();
+        virtual bool OpenFile();
+        virtual bool OpenFile(const char* filename_);
         virtual bool SetFileName(char const *filename_=NULL){
             if (filename_==NULL) return false;
                 filename = filename_;
                 if (FILE *file = fopen(filename, "r")) {
                     fclose(file);
-                    cout << "File " << filename << " exists.\n";
+                    //cout << "File " << filename << " exists.\n";
                     return true;
                 } else {
                     cout << "File " << filename << " does not exist.\n";
@@ -29,6 +35,7 @@ class FileReader {
             };
 
         const char *filename;
+        std::ifstream infile;
         int nL;
         int nlines;
         std::string lineString;
@@ -42,3 +49,4 @@ class FileReader {
 //}
 
 
+#endif

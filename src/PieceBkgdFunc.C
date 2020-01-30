@@ -1,5 +1,5 @@
 #ifndef dummyFunc_h
-#include "dummyFuncs.h"
+#include "dummyFuncs.hpp"
 #endif
 
 #include "TH1F.h"

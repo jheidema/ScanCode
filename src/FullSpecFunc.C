@@ -1,5 +1,5 @@
 #ifndef dummyFunc_h
-#include "dummyFuncs.h"
+#include "dummyFuncs.hpp"
 #endif
 #include "BkgdFunc.C"
 #include "HypBkgdFunc.C"

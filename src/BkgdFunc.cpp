@@ -1,3 +1,5 @@
+#include "BkgdFunc.hpp"
+#ifdef BkgdFunc_hpp
 
 #include "dummyFuncs.hpp"
 
@@ -5,7 +7,7 @@
 #include "TF1.h"
 
 
-TF1* BkgdFunc(TH1F * hIn, bool kHyp=false){
+TF1* BkgdFunc(TH1F * hIn, bool kHyp){
     
     TF1 *pbk;
     TF1 *gbk = new TF1("gbk",gammaBkgd,3,800,7);
@@ -50,3 +52,5 @@ TF1* BkgdFunc(TH1F * hIn, bool kHyp=false){
 
     return fbkgd;
 }
+
+#endif

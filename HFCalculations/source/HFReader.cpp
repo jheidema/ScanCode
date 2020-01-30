@@ -50,9 +50,13 @@ void HFReader::PrintInfo(){
 
 vector<double> HFReader::GetBins(){
   vector<double> centerVec;
-  for(int i=0; i<nL; i++){
-    centerVec.push_back(0.5*(binLeft.at(i)+binRight.at(i)));
+  if(binLeft.size() == binRight.size()){
+    for(int i=0; i<binLeft.size(); i++){
+      centerVec.push_back(0.5*(binLeft.at(i)+binRight.at(i)));
+    }
   }
+  else cout << "HFReader::GetBins >> Bin Vectors are different sizes. Returning Empty Vector.\n";
+  
   return centerVec;
 }
 

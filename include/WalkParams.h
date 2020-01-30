@@ -1,4 +1,4 @@
-#include "dummyFuncs.h"
+#include "dummyFuncs.hpp"
 
 #include "TF1.h"
 #include "TH2F.h"

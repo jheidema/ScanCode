@@ -11,11 +11,32 @@ FileReader::FileReader(){
 };
 
 FileReader::~FileReader(){
+    if(infile.is_open()) infile.close();
 };
 
+std::string FileReader::GetLine(){
+    if(infile.good()) getline(infile,lineString);
+    return lineString;
+}
+
+bool FileReader::OpenFile(){
+    if(std::string(filename).empty()) return false;
+    
+    if(!infile.is_open())
+      infile.open(filename,std::ifstream::in);
+    return true;
+}
+
+bool FileReader::OpenFile(const char* filename_){
+    if(infile.is_open()) return false;
+    
+    SetFileName(filename_);
+    OpenFile();
+    return true; 
+}
 
 bool FileReader::Import(){
-    std::ifstream infile;
+    
     infile.open(filename,std::ifstream::in);
 
     getline(infile,lineString);

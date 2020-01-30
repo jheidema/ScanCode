@@ -22,7 +22,7 @@
 #include <vector>
 #include <iostream>
 
-#include "dummyFuncs.h"
+#include "dummyFuncs.hpp"
 
 using namespace std;
 
