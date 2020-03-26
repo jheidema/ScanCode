@@ -9,7 +9,7 @@
 
 //#define HFReader_hpp
 
-#include "FileReader.hpp"
+#include "FileReader.h"
 
 using namespace std;
 

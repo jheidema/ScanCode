@@ -1,3 +1,4 @@
 #File_Type	Filename
-RootHist	Hists/In134_nToF_birk_sQdc.root
+#RootHist	Hists/In134_nToF_birk_sQdc.root
+RootHist	Hists/In134_nTof_sQdc250_Qdc150.root
 LevelInfo	FitInfo/In134peaks_all.txt

@@ -12,6 +12,8 @@
 #include "HFReader.hpp"
 #include "ConfigReader.hpp"
 
+#include "VandleEff.h"
+
 using namespace std;
 
 int main(int argc, char **argv){
@@ -34,9 +36,9 @@ int main(int argc, char **argv){
   std::string inputFilename;
 	if(handler.getOption(0)->active) // Set input filename
 	  inputFilename = handler.getOption(0)->argument;
-
-  if(inputFilename.empty()){
-	  cout << "Input filename not specified!\n" ;
+   //if(inputFilename.empty()){
+	else{
+    cout << "Input filename not specified!\n" ;
 	  return 1;
 	}
 
@@ -102,19 +104,48 @@ int main(int argc, char **argv){
   ff.GenerateSpecFunc(hIn, false);
   FullFuncClass tf = ff.GetFuncObj();
   //tf.PrintBkgdParams();
+
+
+  ///Making functions from HF calculations
+  FullFuncClass sf;
+  TGraph *gEff = VandleEff();
+  for (int i=0;i<HFBins.size();i++){
+    double amp = HFspectra.at(i).at(1);
+    if (amp>0.05){
+     double tof=sqrt(1./HFBins.at(i)*0.5*939.6/pow(29.98,2))*100.;
+     double cEff = gEff->Eval(HFBins.at(i));
+     cout << "Adding function at " << tof << endl;
+     sf.InsertFunction(tof,amp*1.5*200.*cEff/100.);
+    }   
+  }
+  sf.PrintFuncParams();
+
+
+  //Final corrections before writing to file
+  hIn->GetXaxis()->SetRangeUser(30,150);
+  hIn->GetYaxis()->SetRangeUser(0,hIn->GetBinCenter(hIn->GetMaximumBin()));
+  hIn->SetLineColor(kBlack);
+  hIn->SetLineWidth(2);
+  hIn->SetTitle(inputFilename.c_str());
+
   TF1 *fH = ff.GetFunc();
   fH->SetRange(0,800);
   fH->SetNpx(5000);
 
+  TF1 *fS = new TF1("fS",sf,0,800,0);
+  fS->SetNpx(5000);
+  fS->SetLineColor(kBlue);
+
   TFile *fOut = new TFile(outputFilename.c_str(),"RECREATE");
   hIn->Write();
   fH->Write();
+  fS->Write();
 
   fOut->Close();
   fIn->Close();
   //get spectrum function and bkgd function object and
   //add feeding from 
-  cout << "Good So Far. Keep Working\n" ;
+  //cout << "Good So Far. Keep Working\n" ;
   
   return 0;
 }

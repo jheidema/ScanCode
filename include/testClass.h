@@ -15,6 +15,8 @@
 #include <TTreeReaderValue.h>
 #include <TTreeReaderArray.h>
 #include <TF1.h>
+#include <TH2F.h>
+#include <TH2I.h>
 
 // Header file for the classes stored in the TTree if any.
 #include "ProcessorRootStruc.hpp"
@@ -22,7 +24,7 @@
 #include <vector>
 #include <iostream>
 
-#include "dummyFuncs.hpp"
+#include "../src/dummyFuncs.cpp"
 
 using namespace std;
 
@@ -57,6 +59,7 @@ public :
    
    Long64_t    nEvent = 0;
    Int_t       nEntry;
+   Int_t       nMulti;
    Bool_t      g1560;
    Bool_t      g853;
    Bool_t      g2004;
@@ -70,6 +73,18 @@ public :
    Double_t    sQdc;
    std::vector<Double_t> cloverE;
    std::vector<Int_t> cloverNum;
+
+   std::vector<Double_t> newTof;
+   std::vector<Double_t> newEn;
+   std::vector<Int_t> newBar;
+   Double_t Ehigh = 4.5;
+   Int_t nBins = (Ehigh-0.1)/0.025;
+
+   Int_t bN[26];
+   //OUTPUT Histograms
+   TH2F *tof_tof;
+   TH2F *E_E;
+   TH2I *bOcc;
 
    //Output Tree 
    //TTree *scanTree = new TTree("T","ScanOut Tree");
@@ -91,6 +106,7 @@ public :
    virtual void      SetParameters(Double_t *p1, Double_t *p2, Double_t *p3); 
    virtual Double_t  WCorrToF(Double_t iToF, Double_t qdc);
    virtual Double_t  CalculateEnergy(Double_t tof);
+   virtual void      FillHists();
 };
 
 #endif
@@ -143,6 +159,10 @@ void testClass::Init(TTree *tree)
    fChain = tree;
    fReader.SetTree(tree);
 
+   tof_tof = new TH2F("tof","tof",400,25,225,400,25,225);
+   E_E = new TH2F("EE","EE",nBins,0.1,Ehigh,nBins*2,0.1,Ehigh*2);
+   bOcc = new TH2I("bOcc","bOcc",26,0,26,26,0,26);
+
    fCorr = new TF1("fCorr",tofWcorr,0,35000,6);
    fQuench = new TF1("fQuench",MadeyQ,0,20,4);
    fQDC = new TF1("fQDC","[0]+[1]*x",0,20);
@@ -186,6 +206,11 @@ void testClass::ZeroRootStruc(){
   g2004 = false;
   gBirk =  false;
   nEntry = 0;
+  nMulti = 0;
+
+  for (int i=0; i<26; i++) bN[i]=0;
+  newTof.clear();
+  newBar.clear();
 }
 void testClass::ZeroVandStruc(){
   nToF   = -9999;
@@ -231,7 +256,7 @@ Double_t testClass::CalculateEnergy(Double_t tof){
   double energy;
   if (tof>0){
     if(tof>4) 
-      energy = 0.5 * mN * pow(100./tof/29.98,2); // MeV/c^2
+      energy = 0.5 * mN * pow(100./tof/29.98,2); // MeV
     else 
       energy = -500;
   }

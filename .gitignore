@@ -4,6 +4,11 @@ imgs/
 .vscode/
 *_files/
 
+*.ps
+*.pdf
+
+env.sh
+
 *.d
 *.so
 *.pcm

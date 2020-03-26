@@ -28,11 +28,13 @@ class FullFuncClass {
     void SetParams(double *p);
     void SetParams(int iF, double *p);
     void SetParam(int iF, int iP, double p);
+    void GetParam(int iP) {return params.at(iP);};
     bool SetFitBool(bool rFit){kFit = rFit; return kFit;};
     int  GetNFuncs() {return nFuncs;};
     int  GetNBP() {return nBP;};
-    void PrintFuncParams(int iF){cout << params.at(nBP+iF*2) << " " << params.at(nBP+1+iF*2)<< endl;};
-    void PrintBkgdParams(){for (int i=0; i<nBP; i++) cout << i << " " << params.at(i) << endl;};
+    void PrintFuncParams(int iF){cout << params.at(nBP+iF*npars) << " " << params.at(nBP+1+iF*npars)<< endl;};
+    void PrintFuncParams(){for(int iF=0;iF<nFuncs;iF++) cout << params.at(nBP+iF*npars) << " " << params.at(nBP+1+iF*npars)<< endl;};
+    void PrintBkgdParams(){for(int i=0;i<nBP;i++)       cout << i << " " << params.at(i) << endl;};
     
     vector<double> GetParams(){return params;};
 
@@ -40,9 +42,8 @@ class FullFuncClass {
     double operator() (double *x, double *p){
         if(kFit) SetParams(p);
         double res = 0.;
-        //double bArray[nP];
-        //for(int in=0;in<nP;in++) bArray[in] = params.at(in);
-            res = FullBkgd(x,bArray);
+        
+        if (nBP>0) res = FullBkgd(x,bArray);
 
         for (int i=0; i<nFuncs; i++){
             for (int in=0; in<npars; in++) pArray[in] = params.at(nBP+i*npars+in);

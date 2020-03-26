@@ -11,7 +11,6 @@
 //#include "PieceBkgdFunc.C"
 #include "SpectrumFunc.hpp"
 
-
 using namespace std;
 
 FullSpecFunc::FullSpecFunc(){};
@@ -55,7 +54,7 @@ void FullSpecFunc::GenerateSpecFunc(TH1F* hIn, bool kHyp){
 
     //if(kDraw) {hIn->Draw("hist");fOut->Draw("same");}
 
-    cout << "Good here\n";
+    //cout << "Good here\n";
     return;
 }
 

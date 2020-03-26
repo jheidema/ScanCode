@@ -30,10 +30,10 @@ double nResponse(double *xx, double* p){
                 + sig1*exp(k1*(d1-d2+k1-k2)-k2*(d3+k3))/(k2*(1+d1*d1+2*d1*k1+k1*k1))*(exp(k2*(d3+k3))-exp(k2*(d2+k2)))
                 + sig1*exp(k1*(d1-d2+k1-k2)+k2*(d2-d3+k2-k3))/(k3*(1+d1*d1+2*d1*k1+k1*k1));
 
-    if (x >= -1/sqrt(a0)*sig0 && x <= 0)
+    if (x >= -1/sqrt(a0)*sig0 && x < 0)
         yy=sig0*sig0/((x*x+sig0*sig0))*(a0+1)-a0;
 
-    else if (x > 0 && x <= (k1+d1)*sig1)
+    else if (x >= 0 && x <= (k1+d1)*sig1)
         yy=sig1*sig1/(x*x+sig1*sig1);
 
     else if (x > (k1+d1)*sig1 && x <= (k2+d2)*sig1)

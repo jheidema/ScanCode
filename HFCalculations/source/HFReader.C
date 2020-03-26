@@ -3,8 +3,8 @@
 #include <vector>
 #include <limits>
 
-#include "HFReader.hpp"
-//#include "FileReader.hpp"
+#include "../include/HFReader.h"
+#include "FileReader.C"
 
 #ifdef HFReader_hpp
 
@@ -70,7 +70,7 @@ bool HFReader::Import(){
 
     while(infile.good()){
       nL++;
-      if (nL > 51){
+      if (nL > 45){
       auto found = lineString.find_first_not_of(" \t");
       if( found != string::npos){
        if( lineString[found] != '#'){
@@ -82,7 +82,6 @@ bool HFReader::Import(){
       if (lineString.length()==0) break;
       }
       getline(infile,lineString);
-      //cout << "[" << lineString.length() << "]" << lineString << endl;
     }
     infile.close();
   return true; 
