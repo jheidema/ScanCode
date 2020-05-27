@@ -1,5 +1,3 @@
-#include "dummyFuncs.hpp"
-#ifdef dummyFunc_hpp
 
 #include <cmath>
 #include "TF1.h"
@@ -177,5 +175,3 @@ double AbsHPGe_Eff(double x){
 
     return 0.75 * eff;
 }
-
-#endif

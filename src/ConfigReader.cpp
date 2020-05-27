@@ -10,6 +10,8 @@
 
 ConfigReader::ConfigReader(){
   SetValidNames();
+  stob.insert(std::make_pair("true",true));
+  stob.insert(std::make_pair("false",false));
 };
 
 ConfigReader::~ConfigReader(){
@@ -19,7 +21,7 @@ void ConfigReader::SetValidNames(){
   valids.insert(std::make_pair("RootHist","hname"));
   valids.insert(std::make_pair("RootFile","hname"));
 
-  valids.insert(std::make_pair("LevelName", "lname"));
+  valids.insert(std::make_pair("LevelName","lname"));
   valids.insert(std::make_pair("LevelInfo","lname"));
 
   valids.insert(std::make_pair("OutputFile","output"));
@@ -27,6 +29,21 @@ void ConfigReader::SetValidNames(){
 
   valids.insert(std::make_pair("InputFile","input"));
   valids.insert(std::make_pair("InputName","input"));
+
+  valids.insert(std::make_pair("GSRatio","brname"));
+  valids.insert(std::make_pair("BRFile","brname"));
+  
+  valids.insert(std::make_pair("GSFlag","gsflag"));
+  valids.insert(std::make_pair("gsFlag","gsflag"));
+  valids.insert(std::make_pair("gsflag","gsflag"));
+
+  valids.insert(std::make_pair("GSFit","gsfit"));
+  valids.insert(std::make_pair("gsFit","gsfit"));
+  valids.insert(std::make_pair("gsfit","gsfit"));
+  valids.insert(std::make_pair("GSfit","gsfit"));
+
+  valids.insert(std::make_pair("GSScale","gscalc"));
+  valids.insert(std::make_pair("gsScale","gscalc"));
 
   return;
 }
@@ -54,11 +71,11 @@ bool ConfigReader::Import(){
       auto found = lineString.find_first_not_of(" \t");
       if( found != string::npos){
       if( lineString[found] != '#'){
-        //cout << "ConfigReader::Import: ";
-        //PrintLine(lineString);
+
         std::stringstream ss(lineString);
         ss >> first >> second;
         if(IsValid(first)) namemap.insert(std::make_pair(valids[first],second));  
+        
         else {
           cout << "Config Error: File name not allowed. Rename key " << first << "\n";
           kRead = false;

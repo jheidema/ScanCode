@@ -4,13 +4,8 @@
 #include <limits>
 
 #include "HFReader.hpp"
-//#include "FileReader.hpp"
 
 #ifdef HFReader_hpp
-
-
-//HFReader::HFReader() : FileReader(){
-//};
 
 HFReader::~HFReader(){
 };
@@ -70,7 +65,7 @@ bool HFReader::Import(){
 
     while(infile.good()){
       nL++;
-      if (nL > 51){
+      if (nL > 47){
       auto found = lineString.find_first_not_of(" \t");
       if( found != string::npos){
        if( lineString[found] != '#'){
@@ -86,6 +81,40 @@ bool HFReader::Import(){
     }
     infile.close();
   return true; 
+}
+
+void HFReader::MultiFile(const char* multiName_){
+  FileReader mr(multiName_);
+  std::string fName;
+  while(true){
+    fName = mr.GetLine();
+    if(mr.EoF()) break;
+    if(fName=="") continue;
+    //fName = mr.GetLine();
+    SetFileName(fName.c_str());
+    Import();
+
+  if(multiHists.size()==0) {multiHists = pHists; multiBins = GetBins();}
+  else CompileVectors();
+  
+  }
+
+}
+
+void HFReader::CompileVectors(){
+
+ for (int ih=0; ih<pHists.size(); ih++){
+   if(ih>=multiHists.size()){
+    multiHists.push_back(pHists.at(ih));
+    multiBins.push_back(0.5*(binLeft.at(ih)+binRight.at(ih)));
+   }else{
+     for(int ir=0; ir<pHists.at(ih).size(); ir++){
+       multiHists.at(ih).at(ir) += pHists.at(ih).at(ir);
+     }
+   }
+
+ }
+
 }
 
 #endif

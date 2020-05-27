@@ -10,6 +10,10 @@
 FileReader::FileReader(){
 };
 
+FileReader::FileReader(const char *filename_){
+    OpenFile(filename_);
+}
+
 FileReader::~FileReader(){
     if(infile.is_open()) infile.close();
 };
@@ -47,15 +51,6 @@ bool FileReader::Import(){
         cout << lineString.c_str() << endl;
         getline(infile,lineString);
     }
-
-/*     char c = infile.get();
-
-    while (infile.good()) {
-    std::cout << c;
-    c = infile.get();
-    }
-
-  infile.close(); */
 
   return true; 
 }

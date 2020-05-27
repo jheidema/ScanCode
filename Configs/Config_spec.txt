@@ -1,4 +1,16 @@
 #File_Type	Filename
 #RootHist	Hists/In134_nToF_birk_sQdc.root
-RootHist	Hists/In134_nTof_sQdc250_Qdc150.root
-LevelInfo	FitInfo/In134peaks_all.txt
+#RootHist	Hists/In134_nTof_sQdc250_Qdc150.root
+#RootHist	Hists/Birk1p1/In134_nToF.root
+#RootHist	Hists/Birk2p0/In134_nTOF_sQdc500_Qdc500.root
+RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc500.root
+
+#LevelInfo	FitInfo/In134peaks_all.txt
+LevelInfo	FitInfo/In134peaks_gammas.txt
+
+#RunProcess Value
+#GSFlag      true
+#GSFit       false
+GSFlag      false
+GSFit       true
+#GSScale    0.5

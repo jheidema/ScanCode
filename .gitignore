@@ -6,6 +6,9 @@ imgs/
 
 *.ps
 *.pdf
+*.gif
+*.png
+*.jpg
 
 env.sh
 
@@ -27,7 +30,7 @@ env.sh
 
 #executables
 hfreader
-
+install/*
 
 CMakeCache.txt
 CMakeFiles/

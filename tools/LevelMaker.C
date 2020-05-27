@@ -55,7 +55,9 @@ void LevelMaker(const char *fileName){
 
     double xmax = istate[stLabels.at(stLabels.size()-1)]+1;
     
+    if(!gROOT->GetListOfCanvases()->Contains("c1")){
     TCanvas *c1 =  new TCanvas();
+    }
     TPad *p1 = new TPad("p1","",0,0,1,1);
     p1->Draw();
     p1->cd();
@@ -64,11 +66,13 @@ void LevelMaker(const char *fileName){
     TH1F *hh = (TH1F*)p1->GetPrimitive("hframe");
     hh->GetXaxis()->SetLabelColor(kWhite);
     hh->GetXaxis()->SetNdivisions(5,2,0);
+    hh->GetYaxis()->SetTitle("Ex (MeV)");
     //p1->GetXaxis()->SetLabelColor(kWhite);    
     TPaveText *pt[nIso];
     for (int i=0;i<nIso;i++){
 	    pt[i] = new TPaveText(istate[stLabels.at(i)],-0.5,istate[stLabels.at(i)]+1,-2,"NB"); 
 	    pt[i]->AddText(stLabels.at(i).c_str());
+        pt[i]->SetTextSize(0.05);
     	}
 
     /* pt[0]->AddText("134In");

@@ -1,14 +1,17 @@
+#include "../include/testClass.h"
+#ifdef testClass_h
+
 #define testClass_cxx
 
-#include "testClass.h"
+
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
 
-void testClass::Loop()
+void testClass::Loop(Double_t fBirk_)
 {
- if (fChain == 0) return;
+ if (fChain == 0) {cout<< "fChain==0\n";  return;}
   
   TFile *outF = new TFile("testOut.root","RECREATE");
   
@@ -19,6 +22,7 @@ void testClass::Loop()
    scanTree->Branch("nMulti",&nMulti,"nMulti/I");
    scanTree->Branch("nToF",&nToF,"nToF/D");
    scanTree->Branch("oToF",&oToF,"oToF/D");
+   scanTree->Branch("tdiff",&tdiff,"tdiff/D");
    scanTree->Branch("En",&En,"En/D");
    scanTree->Branch("barNum",&barNum,"barNum/I");
    scanTree->Branch("Qdc",&Qdc,"Qdc/D");
@@ -26,6 +30,7 @@ void testClass::Loop()
    scanTree->Branch("sTime",&sTime,"sTime/D");
    scanTree->Branch("sQdc",&sQdc,"sQdc/D");
    scanTree->Branch("cloverE",&cloverE);
+   scanTree->Branch("cloverAB",&cloverAB,"cloverAB/D");
    scanTree->Branch("cloverNum",&cloverNum);
    scanTree->Branch("g1560",&g1560,"g1560/O"); 
    scanTree->Branch("g853",&g853,"g853/O"); 
@@ -35,9 +40,11 @@ void testClass::Loop()
    
    Double_t corr_prs[6] = {6611.09,2.5873,0.498726,-0.000406763,9.13781e-07,1.09327e-09};
    Double_t Mad_prs[4] = {0.95,8.0,0.1,0.90};
-   Double_t cal_prs[2] = {364.405,13.5098};  //QDCcutoff Fit to 49K data
-   //Double_t cal_prs[2] = {1259.0,8.456}; // Fit to 60Co data
-   
+   Double_t cal_prs[2] = {364.405,13.5098};  // QDCcutoff Fit to 49K data
+   //Double_t cal_prs[2] = {1259.0,8.456};   // Fit to 60Co data
+   fBirk = fBirk_;
+   TNamed *sBirk = new TNamed("BirkFactor",Form("%f",fBirk));
+
    SetParameters(corr_prs,Mad_prs,cal_prs);
    Bool_t gEvent=false;
    Long64_t nentries = fReader.GetEntries(true);
@@ -54,8 +61,8 @@ void testClass::Loop()
          if(goodEvent){
            nEntry++;
            scanTree->Fill();
+           ZeroVandStruc();
          }
-         ZeroVandStruc();
        }
        if(newTof.size()>1) FillHists();
       }
@@ -64,6 +71,7 @@ void testClass::Loop()
      //if (nEvent==1000) break;
    }
    cout<<endl;
+   sBirk->Write();
    scanTree->Write();
    tof_tof->Write();
    E_E->Write();
@@ -76,6 +84,7 @@ Bool_t testClass::Analyze(Int_t iv){
   if (iv>=0){// return false;
   gBirk=true;
   oToF = f_vandle_vec_.At(iv).corTof;
+  tdiff = f_vandle_vec_.At(iv).tdiff;
   Qdc = f_vandle_vec_.At(iv).qdc;
   barNum = f_vandle_vec_.At(iv).barNum; 
   bN[barNum]++;       
@@ -85,7 +94,7 @@ Bool_t testClass::Analyze(Int_t iv){
 
    //Birks Quality Cut
    Double_t el_eq = fQuench->Eval(En);
-   Double_t maxQdc = 1.1*fQDC->Eval(el_eq*1000.);
+   Double_t maxQdc = fBirk*fQDC->Eval(el_eq*1000.);
     if(Qdc>maxQdc) gBirk = false;
    
    //Beta start Info
@@ -131,3 +140,5 @@ void testClass::FillHists(){
   }
   ///cout << std::endl;
 }
+
+#endif

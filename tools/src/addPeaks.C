@@ -1,15 +1,19 @@
 #include "tofFuncClass.cpp"
 
+#include "TFile.h"
 #include "TH1F.h"
 #include "TF1.h"
 #include "TCanvas.h"
 #include "TGaxis.h"
 #include "TStyle.h"
+#include "TApplication.h"
 
 #include "../include/MakeAxis.h"
 
 void addPeak(TH1F *hIn, Double_t offMax = 1.0, Bool_t kFix=false){
-gStyle->SetOptStat(0);
+    
+    gStyle->SetOptStat(0);
+
     tofFuncClass tf;
     Int_t npars=tf.npars;
     tf.SetFitBool(true);
@@ -18,6 +22,9 @@ gStyle->SetOptStat(0);
     hIn->GetListOfFunctions()->Clear();
     hIn->GetXaxis()->SetRangeUser(30,100);
     hIn->GetYaxis()->UnZoom();
+    hIn->SetLineStyle(0);
+    hIn->SetLineColor(kBlack);
+    
     TCanvas *c1 = new TCanvas("c1","c1",1000,600);
     hIn->Draw();
 
@@ -46,6 +53,8 @@ gStyle->SetOptStat(0);
     cout<< "Next Step? [+/add,-/remove,0/done,(U)L/(un)lock,(U)Lall,run,ftoggle]" << endl;
     cin >> inString;
 
+    //c1->WaitPrimitive();
+
     if(inString=="0" || inString=="done") break;
 
     if(inString=="run") kRun=true;
@@ -53,8 +62,10 @@ gStyle->SetOptStat(0);
     if(inString=="xzoom"){
         cout << "New X axis range: <low> <high>\n";
         cin >> xlow >> xhi;
-        hIn->GetXaxis()->SetRangeUser(minT,maxT);
-        hIn->Draw();
+        hIn->GetXaxis()->SetRangeUser(xlow,xhi);
+        //hIn->Draw();
+        gPad->Modified();
+        gPad->Update();
     }
 
     if(inString=="ftoggle"){
@@ -145,7 +156,7 @@ gStyle->SetOptStat(0);
     f1->SetParameter(npeaks*npars,0.25);
     f1->SetParLimits(npeaks*npars,0.1,offMax);
     
-    if(fMode==0) hIn->Fit(f1,"QNL","",minT-3,maxT+20);
+    if(fMode==0) hIn->Fit(f1,"QNL","",minT-3,maxT+10);
     else if(fMode==1) hIn->Fit(f1,"QN","",minT-3,maxT+20);
 
     cout << "X^2/Ndf:" << f1->GetChisquare()/f1->GetNDF() << endl;
@@ -174,4 +185,22 @@ gStyle->SetOptStat(0);
    }
   }
     return;
+}
+
+void application(int argc, char** argv){
+    cout << *argv << endl;
+    cout << argv[1] << endl; 
+    TFile *fIn = new TFile(argv[1],"READ");
+    TH1F *hIn = (TH1F*)fIn->Get(argv[2]);
+    
+    addPeak(hIn);
+    
+    return;
+}
+
+int main(int argc, char** argv){
+    TApplication app("Peak Application", &argc, argv);
+    application(app.Argc(), app.Argv());
+    app.Run(true);
+    return 0;
 }

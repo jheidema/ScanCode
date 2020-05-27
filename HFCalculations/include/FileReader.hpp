@@ -7,26 +7,24 @@
 #include <fstream>
 #include <string>
 
-
-
 using namespace std;
-
 
 class FileReader {
     public:
         FileReader();
+        FileReader(const char *filename_);
         virtual ~FileReader();
         //FileReader(char const *filename_);
         virtual bool Import();
         virtual std::string GetLine();
         virtual bool OpenFile();
         virtual bool OpenFile(const char* filename_);
+        virtual bool EoF(){ return infile.eof();};
         virtual bool SetFileName(char const *filename_=NULL){
             if (filename_==NULL) return false;
                 filename = filename_;
                 if (FILE *file = fopen(filename, "r")) {
                     fclose(file);
-                    //cout << "File " << filename << " exists.\n";
                     return true;
                 } else {
                     cout << "File " << filename << " does not exist.\n";
@@ -40,13 +38,6 @@ class FileReader {
         int nlines;
         std::string lineString;
 };
-
-//FileReader::FileReader(char const *filename_){
-//    SetFileName(filename_);
-//}
-
-//bool FileReader::SetFileName(char const *filename_){
-//}
 
 
 #endif

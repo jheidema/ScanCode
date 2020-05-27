@@ -1,5 +1,5 @@
 
-#include "dummyFuncs.hpp"
+#include "dummyFuncs.cpp"
 
 #include "TH1F.h"
 #include "TF1.h"
@@ -16,14 +16,14 @@ TF1* BkgdFunc(TH1F * hIn, bool kHyp=false){
     int nPpbk = 0;
     int nPars = 0;
     
-    if(kHyp){
+    /* if(kHyp){
     
         pbk = new TF1("pbk",pieceBkgd,-100,800,4);
         /// Fitting the hyperbolic bkgd
         pbk->SetParLimits(0,325,425);
         hIn->Fit(pbk,"QN","",200,600);
         nPpbk = pbk->GetNpar();
-    }
+    } */
     
      nPgbk = gbk->GetNpar();
      nPars = nPgbk + nPpbk;
@@ -43,7 +43,7 @@ TF1* BkgdFunc(TH1F * hIn, bool kHyp=false){
     }
 
     hIn->Fit(fbkgd,"QN","",3,30);
-    hIn->Fit(fbkgd,"QN","",3,700);
+    hIn->Fit(fbkgd,"N","",3,700);
     
     //hIn->Draw("hist");
     //gbk->Draw("same");

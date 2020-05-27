@@ -7,8 +7,6 @@
 #include <fstream>
 #include <string>
 
-//#define HFReader_hpp
-
 #include "FileReader.hpp"
 
 using namespace std;
@@ -21,12 +19,18 @@ class HFReader : public FileReader {
         bool Import() override;
         void LoadVectors(std::string lineString);
         void PrintInfo();
+        void MultiFile(const char* multiName_);
         
-        vector < vector <double> > GetVectors(){return pHists;};
-        vector < double >  GetBins();
-        vector <double> binLeft;
-        vector <double> binRight;
-        vector < vector <double> > pHists;
+        vector< vector < double > > GetVectors(){return pHists;};
+        vector< double >  GetBins();
+        void CompileVectors();
+
+        vector< double > binLeft;
+        vector< double > binRight;
+        vector< vector< double > > pHists;
+        
+        vector< vector< double > > multiHists;
+        vector< double > multiBins;
 
 };
 

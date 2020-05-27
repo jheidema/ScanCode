@@ -41,13 +41,13 @@ class tofFuncClass {
                         };
     
     double operator() (double *x, double *p){
-        if(kFit) for(int i=0; i<nFuncs*npars; i++) params.at(i) = p[i];
+        if(kFit) for(int i=0; i<nFuncs*npars; i++) params.at(i) = p[i];//SetParams(p);
         double res = 0.0;
         double off = p[nFuncs*npars];
         for (int i=0; i<nFuncs; i++){
-            for (int in=0; in<npars; in++){pArray[in] = p[i*npars+in];}
+            for (int in=0; in<npars; in++){pArray[in] = p[i*npars+in];}// pArray[1] = p[i*npars+2];// pArray[2] = p[i*3+3];
             res += calcResponse(x,pArray);
-            
+            //res = 0;
         } 
         return res + off;
     };
