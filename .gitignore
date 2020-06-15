@@ -25,6 +25,9 @@ env.sh
 *.out
 *.dat
 
+HFCalculations/*dist.txt
+HF_files.txt
+
 *install*
 *build*
 

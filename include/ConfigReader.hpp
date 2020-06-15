@@ -19,6 +19,7 @@ class ConfigReader: public FileReader {
         std::string GetOutputName(){return namemap["output"];};
         std::string GetInputName(){return namemap["input"];};
         std::string GetBRFileName(){return namemap["brname"];};
+        std::string GetFuncFileName(){return namemap["ffile"];};
              bool   GetGSFlag(){if(namemap.count("gsflag")==0) return false; else return stob[namemap["gsflag"]];};
              bool   GetGSFitFlag(){if(namemap.count("gsfit")==0) return false; else return stob[namemap["gsfit"]];};
              double GetGSScale(){
@@ -35,7 +36,10 @@ class ConfigReader: public FileReader {
         virtual bool IsValid(std::string name);
         std::map<std::string, std::string> namemap;
 
+        void SetVerbose(bool kIn) {kVerbose = kIn;}
+
     private:
         std::map<std::string, bool> stob;
         std::map<std::string, std::string> valids;
+        bool kVerbose;
 };

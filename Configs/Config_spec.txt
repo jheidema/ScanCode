@@ -3,10 +3,14 @@
 #RootHist	Hists/In134_nTof_sQdc250_Qdc150.root
 #RootHist	Hists/Birk1p1/In134_nToF.root
 #RootHist	Hists/Birk2p0/In134_nTOF_sQdc500_Qdc500.root
-RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc500.root
+#RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc500.root
+RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc50.root
 
 #LevelInfo	FitInfo/In134peaks_all.txt
-LevelInfo	FitInfo/In134peaks_gammas.txt
+#LevelInfo	FitInfo/In134peaks_gammas.txt
+LevelInfo	FitInfo/In134peaks_sorted.txt
+#LevelInfo	FitInfo/In134peaks_1561sorted.txt
+#LevelInfo	FitInfo/In134peaks_1560gammas.txt
 
 #RunProcess Value
 #GSFlag      true
@@ -14,3 +18,6 @@ LevelInfo	FitInfo/In134peaks_gammas.txt
 GSFlag      false
 GSFit       true
 #GSScale    0.5
+
+#File w/ Additional Functions
+FuncFile FitInfo/functions.txt

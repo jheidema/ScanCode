@@ -1,0 +1,5 @@
+#funcname   par0 par1 par3 ....
+#gaus    51  0.5 150
+gaus    65.5  4.5  300
+landau    47.5  1.0  2000
+#landau    67  5   1000

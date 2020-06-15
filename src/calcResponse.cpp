@@ -26,8 +26,15 @@ double calcResponse(double *xx, double* p){
     //sig1 = 0.5*sqrt(sig1*sig1+1.*sigE*sigE);
         //low-res
     double sigE = 0.9*(283600/2.*t0*t0-1663115*t0+681358889)*1.E-9;
+    //sig0 = 1.*sqrt(sig0*sig0+0.75*sigE*sigE);
     sig0 = 1.*sqrt(sig0*sig0+0.75*sigE*sigE);
     sig1 = 1.*sqrt(sig1*sig1+1.*sigE*sigE);
+
+        //super low-res
+    //double sigE = 1.0*(283600/2.*t0*t0-1663115*t0+681358889)*1.E-9;
+    //sig0 = 1.*sqrt(sig0*sig0+1*sigE*sigE);
+    //sig1 = 1.*sqrt(sig1*sig1+1.*sigE*sigE);
+
 
     k1=0.4*k1;
     d1=0.8*d1;

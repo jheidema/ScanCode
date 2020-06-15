@@ -46,6 +46,29 @@ void SpectrumFunc::PrintExBR(){
     }
 }
 
+/* void SpectrumFunc::SortGS(){
+    if(gsInfo.size()<2) return;
+    //std::vector< std::pair<double, double> >
+    double pvals[2];
+    vector<double> copy_vec;
+    copy_vec.push_back(params.at(0));
+    copy_vec.push_back(params.at(1));
+    std::vector<double>::iterator it;
+
+    for(int ip=2; ip<nFuncs*npars; ip=ip+2){
+        pvals[0]=params.at(ip);
+        pvals[1]=params.at(ip+1);
+        for(it = copy_vec.begin(); it<copy_vec.end(); it++){
+            if(params.at(ip)<*it)  break;
+        }
+        copy_vec.insert(it,pvals,pvals+2);   
+    }
+    params.clear();
+    params = copy_vec;
+} */
+
+
+
 void SpectrumFunc::LoadInput(const char *fileName, bool kGS, bool kPrint){
     stInfo.clear();
     gsInfo.clear();
@@ -55,7 +78,6 @@ void SpectrumFunc::LoadInput(const char *fileName, bool kGS, bool kPrint){
     
     while(true){
         fin >> t0 >> An >> gamE >> Ex >> gsBR;
-        if(fin.eof()) break;
         double gEff;
         double en = CalcEn(t0);
 
@@ -73,10 +95,11 @@ void SpectrumFunc::LoadInput(const char *fileName, bool kGS, bool kPrint){
         if(kGS){
             stInfo.push_back(std::make_pair(tgs,An*gEff*neffR*gsBR));
             //stInfo.push_back(std::make_pair(tgs,An*gEff*feedR.at(1561)*neffR*fGS*gsBR));
-            if(kVerbose) printf("GS Transition: %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n",t0,en,tgs,gEn,neffR,gsBR);
+            if(kVerbose) printf("GS Transition: %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n",t0,en,tgs,gEn,neffR,An*gEff*neffR*gsBR);
         }
         }
         if(kPrint) cout << t0 << "\t"<< An << "\t" << gamE << "\t" << An*gEff << endl;
+        if(fin.eof()) break;
     }
     fin.close();
     return;

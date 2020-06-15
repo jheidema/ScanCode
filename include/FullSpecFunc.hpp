@@ -6,9 +6,10 @@
 #include <vector>
 #include <cmath>
 
-#include "fullFuncClass.hpp"
+#include "FullFuncClass.hpp"
 #include "FileReader.hpp"
 #include "SpectrumClass.hpp"
+#include "FitFuncClass.hpp"
 
 #include "TH1F.h"
 #include "TF1.h"
@@ -24,28 +25,69 @@ class FullSpecFunc {
     bool OpenFile();
     void GenerateSpecFunc();
     void GenerateSpecFunc(TH1D *hIn, bool kHyp=false);
+    TF1* GenerateFitFunc(TH1D* hIn);
+
     void SetGSCalc(bool kIN) {kGS = kIN;};
-    
+    void AddFuncs(FitFuncClass &gff, const char *filename_);
+    void SetFuncFileName(const char *filename_){funcfilename=filename_;};
     FullFuncClass GetFuncObj(){return tf;};
     SpectrumFunc GetSpecFunc(){return sf;};
     
     TF1* GetFunc(){return fOut;};
-    TF1* FitGSStates(TH1D* hIn);
     
+    int GetNgauss(){return gf.GetNGaus();};
+    void GetGaussPars(double *prs, int igs){
+        if(igs>ngs){prs[0]=0; prs[1]=0; prs[2]=0; return;}
+        prs[0] =  gf.g_means.at(igs);
+        prs[1] =  gf.g_sigs.at(igs);
+        prs[2] =  gf.g_amps.at(igs);
+        };
+    double *GetGaussPars(int igs){
+        if(igs>=ngs){pars[0]=0; pars[1]=0; pars[2]=0; return pars;}
+        pars[0] =  gf.g_means.at(igs);
+        pars[1] =  gf.g_sigs.at(igs);
+        pars[2] =  gf.g_amps.at(igs);
+        return pars;
+        };
+    
+    int GetNlandau(){return gf.GetNLand();};
+    void GetLandauPars(double *prs, int ild){
+        if(ild>nld){prs[0]=0; prs[1]=0; prs[2]=0; return;}
+        prs[0] =  gf.l_mpvs.at(ild);
+        prs[1] =  gf.l_sigmas.at(ild);
+        prs[2] =  gf.l_amps.at(ild);
+        };
+    double *GetLandauPars(int ild){
+        if(ild>=nld){pars[0]=0; pars[1]=0; pars[2]=0; return pars;}
+        pars[0] =  gf.l_mpvs.at(ild);
+        pars[1] =  gf.l_sigmas.at(ild);
+        pars[2] =  gf.l_amps.at(ild);
+        return pars;
+        };
+
     FileReader fr;
+    FileReader funcf;
     SpectrumFunc sf;
     FullFuncClass tf;
+    FitFuncClass gf;
     
     const int nrp = 2;
     const char *filename;
+    const char *funcfilename;
     TF1 *fB;
     TF1 *fOut;
     double *bArray;
+    
     int nBP;
     int nFuncs;
+    int ngs;
+    int nld;
+
     bool kGS = false;
     bool kVerbose = false;
 
+    private:
+        double pars[3]={0};
 };
 
 #endif

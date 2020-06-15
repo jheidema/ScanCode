@@ -1,4 +1,4 @@
-#include "fullFuncClass.hpp"
+#include "FullFuncClass.hpp"
 
 #ifdef FullFuncClass_hpp
 

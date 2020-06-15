@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <sstream>
+#include <istream>
+#include <iterator>
 #include "FileReader.hpp"
 
 
 #ifdef FileReader_hpp
-
+using namespace std;
 
 FileReader::FileReader(){
 };
@@ -34,9 +36,33 @@ bool FileReader::OpenFile(){
 bool FileReader::OpenFile(const char* filename_){
     if(infile.is_open()) return false;
     
-    SetFileName(filename_);
-    OpenFile();
-    return true; 
+    if(!(SetFileName(filename_))) return false;
+    
+    bool kGood = OpenFile();
+    return kGood; 
+}
+
+vector<vector<string>> FileReader::LoadFile(){
+
+    GetLine();
+    nL=0;
+    while(infile.good()){
+        getline(infile,lineString);
+        nL++;
+        auto found = lineString.find_first_not_of(" \t");
+        if( found != string::npos){
+            if( lineString[found] != '#'){
+                std::stringstream ss(lineString);
+                std::istream_iterator<std::string> first(ss);
+                std::istream_iterator<std::string> last;
+                std::vector<std::string> linevec(first, last);
+                //std::copy(vstrings.begin(), vstrings.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+                ftext.push_back(linevec);
+            }
+        }
+    }
+    if(kVerbose) cout << "Loaded File " << filename << endl;
+    return ftext;
 }
 
 bool FileReader::Import(){

@@ -31,7 +31,7 @@ TF1* BkgdFunc(TH1D * hIn, bool kHyp){
      nPgbk = gbk->GetNpar();
      nPars = nPgbk + nPpbk;
 
-    TF1 *fbkgd = new TF1("fbkgd",FullBkgd,-100,800,nPars);
+    TF1 *fbkgd = new TF1("fbkgd",FitBkgd,-100,800,nPars);
     fbkgd->SetParLimits(0,3,4);
     fbkgd->SetParLimits(1,100,1E5);
     fbkgd->SetParLimits(2,0,5);

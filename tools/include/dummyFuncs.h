@@ -1,4 +1,3 @@
-
 #include <cmath>
 #include "TF1.h"
 
@@ -31,6 +30,43 @@ double g_peak(double *x, double *p){
     else
         return -9999;
 }
+
+double gauss(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0]; //mean
+    double p1 = p[1]; //sig
+    double p2 = p[2]; //amp
+
+    double val = p2*exp(-0.5*pow((xx-p0)/p1,2));
+
+    return val;
+}
+
+double agauss(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0]; //mean
+    double p1 = p[1]; //sig1
+    double p2 = p[2]; //sig2
+    double p3 = p[3]; //amp
+
+    double val;
+    if(xx<=p0) val = p3*exp(-0.5*pow((xx-p0)/p1,2));
+    else if(xx>p0) val = p3*exp(-0.5*pow((xx-p0)/p2,2));
+
+    return val;
+}
+
+double normal(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0]; //mean
+    double p1 = p[1]; //sig
+    double p2 = p[2]; //amp
+
+    double val = p2*exp(-0.5*pow((xx-p0)/p1,2))*1./(p1*sqrt(2*3.142));;
+
+    return val;
+}
+
 
 double hypBkgd(double *x, double *p){
     double xx = x[0];
@@ -68,9 +104,36 @@ double gammaBkgd(double *x, double *p){
     double p5 = p[5];
     double p6 = p[6];
 
-    if(xx>27&&xx<300) TF1::RejectPoint();
+    //if(xx>27&&xx<300) TF1::RejectPoint();
     return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p6))+p5;
     //return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5;
+}
+
+double FitBkgd(double *x, double *p){
+    double xx = x[0];
+    //Gamma Bkgd Params
+    //double p0 = p[0]; 
+    //double p1 = p[1]; 
+    //double p2 = p[2]; 
+    //double p3 = p[3]; 
+    //double p4 = p[4];
+    //double p5 = p[5];
+    ////Hyp Bkgd Params
+    //double p6 = p[6]; 
+    //double p7 = p[7]; 
+    //double p8 = p[8]; 
+    //double p9 = p[9]; 
+    //double p10 = p[10]; 
+    
+    double y;
+    if(xx<0||xx>900) { y = 0.;  TF1::RejectPoint(); }
+    else y = gammaBkgd(x,p);// + pieceBkgd(x,&p[7]);
+    //else y = gammaBkgd(x,p) + hypBkgd(x,&p[6]);
+    //else y = p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5 + p6*cosh(p7*asinh(p8*(xx-p9)))+p10;
+
+    if(xx>27&&xx<300) TF1::RejectPoint();
+    if(p[0]==0) return 0;
+    return y;
 }
 
 double FullBkgd(double *x, double *p){
@@ -88,14 +151,14 @@ double FullBkgd(double *x, double *p){
     //double p8 = p[8]; 
     //double p9 = p[9]; 
     //double p10 = p[10]; 
-
+    
+    if(p[0]==0) return 0;
+    
     double y;
-    if(xx<0||xx>900) { y = 0.;  TF1::RejectPoint(); }
+    if(xx<0||xx>900) { y = 0.;}
     else y = gammaBkgd(x,p);// + pieceBkgd(x,&p[7]);
     //else y = gammaBkgd(x,p) + hypBkgd(x,&p[6]);
     //else y = p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5 + p6*cosh(p7*asinh(p8*(xx-p9)))+p10;
-
-    if(xx>27&&xx<300) TF1::RejectPoint();
 
     return y;
 }

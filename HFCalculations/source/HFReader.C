@@ -8,10 +8,6 @@
 
 #ifdef HFReader_hpp
 
-
-//HFReader::HFReader() : FileReader(){
-//};
-
 HFReader::~HFReader(){
 };
 
@@ -53,7 +49,8 @@ vector<double> HFReader::GetBins(){
   vector<double> centerVec;
   if(binLeft.size() == binRight.size()){
     for(int i=0; i<binLeft.size(); i++){
-      centerVec.push_back(0.5*(binLeft.at(i)+binRight.at(i)));
+      centerVec.push_back(binLeft.at(i));
+      //centerVec.push_back(0.5*(binLeft.at(i)+binRight.at(i)));
     }
   }
   else cout << "HFReader::GetBins >> Bin Vectors are different sizes. Returning Empty Vector.\n";

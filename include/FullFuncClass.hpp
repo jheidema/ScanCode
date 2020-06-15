@@ -20,6 +20,8 @@ class FullFuncClass {
         double pArray[npars];
         double *bArray;
         bool kFit = false;    
+//        vector< std::pair<double, double> > gausvec;
+
 
     FullFuncClass();
     FullFuncClass(int nP, double *initP);
@@ -33,6 +35,8 @@ class FullFuncClass {
     void SetFitBool(bool kIn){kFit = kIn;};
     void SetNFuncs(int nfIn){nFuncs=nfIn;};
     
+//    void AddGaus(double mean, double sigma){gausvec.push_back(std::make_pair(mean, sigma));};
+
     double GetParam(int iP) {return params.at(iP);};
     bool   GetFitBool(){return kFit;};
     int  GetNFuncs() {return nFuncs;};
@@ -48,9 +52,10 @@ class FullFuncClass {
     double operator() (double *x, double *p){
         double res = 0.;
         if (nBP>0) res = FullBkgd(x,bArray);
+        
         //if(kFit) for(int i=0; i<nFuncs*npars; i++) params.at(i) = p[i];
         
-        if(kFit){// SetParams(p);
+        if(kFit){
             for (int i=0; i<nFuncs; i++){
                 for (int in=0; in<npars; in++) pArray[in] = p[i*npars+in];
                 res += calcResponse(x,pArray);

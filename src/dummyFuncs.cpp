@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include "TF1.h"
+#include "TMath.h"
 
 double tofWcorr(double *x, double *p){
     double xx = x[0];
@@ -32,6 +33,82 @@ double g_peak(double *x, double *p){
         return p1 * (p4 + 1) * pow(p5,2) / (pow(xx-p0,2) + pow(p5,2)) - p4;
     else
         return -9999;
+}
+
+double gauss(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0]; //mean
+    double p1 = p[1]; //sig
+    double p2 = p[2]; //amp
+
+    double val = p2*exp(-0.5*pow((xx-p0)/p1,2));
+
+    return val;
+}
+
+double agauss(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0]; //mean
+    double p1 = p[1]; //sig1
+    double p2 = p[2]; //sig2
+    double p3 = p[3]; //amp
+
+    double val;
+    if(xx<=p0) val = p3*exp(-0.5*pow((xx-p0)/p1,2));
+    else if(xx>p0) val = p3*exp(-0.5*pow((xx-p0)/p2,2));
+
+    return val;
+}
+
+double normal(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0]; //mean
+    double p1 = p[1]; //sig
+    double p2 = p[2]; //amp
+
+    double val = p2*exp(-0.5*pow((xx-p0)/p1,2))*1./(p1*sqrt(2*3.142));;
+
+    return val;
+}
+
+double lorentz(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0];  //mu
+    double p1 = p[1];  //sig
+    double p2 = p[2];  //amp
+
+    return p2/(3.1415*p1*(1+(xx-p0)*(xx-p0)/(p1*p1)));
+}
+
+double alorentz(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0];  //mu
+    double p1 = p[1];  //sig1
+    double p2 = p[2];  //sig2
+    double p3 = p[3];  //amp
+
+    if (xx<=p0)
+        return p3/(3.1415*p1*(1+(xx-p0)*(xx-p0)/(p1*p1)));
+    if (xx>p0)
+        return p3/(3.1415*p1*(1+(xx-p0)*(xx-p0)/(p2*p2)));
+    else return 0;
+}
+
+double alandau(double *x, double *p){
+    double xx = x[0];
+    double p0 = p[0];  //mu
+    double p1 = p[1];  //sig1
+    double p2 = p[2];  //sig2
+    double p3 = p[3];  //amp
+
+    double val;
+    if(xx<=p0)
+        val  = TMath::Landau(xx,p0,p1,0);
+    if(xx>p0)
+        val  = TMath::Landau(xx,p0,p2,0);
+    val = p3*val;
+    
+    return val;
 }
 
 double hypBkgd(double *x, double *p){
@@ -70,9 +147,36 @@ double gammaBkgd(double *x, double *p){
     double p5 = p[5];
     double p6 = p[6];
 
-    if(xx>27&&xx<300) TF1::RejectPoint();
+    //if(xx>27&&xx<300) TF1::RejectPoint();
     return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p6))+p5;
     //return p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5;
+}
+
+double FitBkgd(double *x, double *p){
+    double xx = x[0];
+    //Gamma Bkgd Params
+    //double p0 = p[0]; 
+    //double p1 = p[1]; 
+    //double p2 = p[2]; 
+    //double p3 = p[3]; 
+    //double p4 = p[4];
+    //double p5 = p[5];
+    ////Hyp Bkgd Params
+    //double p6 = p[6]; 
+    //double p7 = p[7]; 
+    //double p8 = p[8]; 
+    //double p9 = p[9]; 
+    //double p10 = p[10]; 
+    
+    double y;
+    if(xx<0||xx>900) { y = 0.;  TF1::RejectPoint(); }
+    else y = gammaBkgd(x,p);// + pieceBkgd(x,&p[7]);
+    //else y = gammaBkgd(x,p) + hypBkgd(x,&p[6]);
+    //else y = p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5 + p6*cosh(p7*asinh(p8*(xx-p9)))+p10;
+
+    if(xx>27&&xx<300) TF1::RejectPoint();
+    if(p[0]==0) return 0;
+    return y;
 }
 
 double FullBkgd(double *x, double *p){
@@ -90,14 +194,14 @@ double FullBkgd(double *x, double *p){
     //double p8 = p[8]; 
     //double p9 = p[9]; 
     //double p10 = p[10]; 
-
+    
+    if(p[0]==0) return 0;
+    
     double y;
-    if(xx<0||xx>900) { y = 0.;  TF1::RejectPoint(); }
+    if(xx<0||xx>900) { y = 0.;}
     else y = gammaBkgd(x,p);// + pieceBkgd(x,&p[7]);
     //else y = gammaBkgd(x,p) + hypBkgd(x,&p[6]);
     //else y = p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5 + p6*cosh(p7*asinh(p8*(xx-p9)))+p10;
-
-    if(xx>27&&xx<300) TF1::RejectPoint();
 
     return y;
 }

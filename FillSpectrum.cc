@@ -8,13 +8,15 @@
 #include "TF1.h"
 #include "TGraph.h"
 #include "TObject.h"
+#include "TCanvas.h"
 
-#include "fullFuncClass.hpp"
+#include "FullFuncClass.hpp"
 #include "optionHandler.hpp"
 #include "FullSpecFunc.hpp"
 #include "HFReader.hpp"
 #include "ConfigReader.hpp"
 
+#include "dummyFuncs.hpp"
 #include "VandleEff.hpp"
 
 using namespace std;
@@ -22,7 +24,9 @@ using namespace std;
 string errstring = "[ERROR] FillSpectrum::main >>> ";
 
 int main(int argc, char **argv){
-     
+
+  gROOT->SetBatch(true);
+
   optionHandler handler;
   handler.add(optionExt("HFinput",required_argument, NULL,'i',"<HFfilename>","Specify an input file from HF calculations (can't be used with -M)."));
   handler.add(optionExt("HFmulti",required_argument, NULL,'M',"<HFfilename>","Specify text file with paths to HF calculations (can't be used with -i)."));
@@ -80,6 +84,7 @@ int main(int argc, char **argv){
   
   std::string RootFilename;
   std::string LevelFilename;
+  std::string FunctionFilename;
   
   bool kVerbose = false;
   if(handler.getOption(4)->active) kVerbose = true;
@@ -90,10 +95,13 @@ int main(int argc, char **argv){
      cout << errstring << "Config file does not exist.\n"; 
      return 1;
   }
-  
+  cr.SetVerbose(kVerbose);
   cr.Import();
+  
   RootFilename = cr.GetHistogramName();
   LevelFilename = cr.GetLevelName();
+  FunctionFilename = cr.GetFuncFileName();
+
   bool gsFlag = cr.GetGSFlag();
   bool gsFit = cr.GetGSFitFlag();
   if(gsFlag && gsFit) {
@@ -157,9 +165,25 @@ int main(int argc, char **argv){
   FullSpecFunc ff(kVerbose);
   ff.SetInfoFile(LevelFilename.c_str());
   ff.SetGSCalc(gsFlag);
-    
-  ff.GenerateSpecFunc(hIn, false);
-   
+  ff.SetFuncFileName(FunctionFilename.c_str());
+//  ff.GenerateSpecFunc(hIn, false);
+
+  TF1 *fN;
+  if(gsFit){
+    fN = ff.GenerateFitFunc(hIn);
+    fN->SetRange(0,800);
+    fN->SetNpx(5000);
+    fN->SetLineColor(kRed);
+  } else{
+    cout << "No Fitting Performed" << endl;
+    ff.GenerateSpecFunc(hIn, false);
+  }   
+
+  TF1 *fH = ff.GetFunc();;
+  fH->SetRange(0,800);
+  fH->SetNpx(5000);
+  fH->SetLineColor(kBlue);
+
   ///Making functions from HF calculations
   FullFuncClass sf;
   TGraph *gEff = Efficiencies::VandleEff();
@@ -172,30 +196,17 @@ int main(int argc, char **argv){
      sf.InsertFunction(tof,amp*(double)histN/nNorm*0.8*cEff/100.); /// JNH: 0.8 FACTOR NEEDS TO BE REMOVED BEFORE SETTING PROPER INTENSITIES
     }   
   }
-  
-  //Final corrections before writing to file
-  hIn->GetXaxis()->SetRangeUser(20,200);
-  
-  hIn->GetYaxis()->UnZoom();
-  hIn->SetLineColor(kBlack);
-  hIn->SetLineWidth(2);
-  hIn->SetTitle(inputFilename.c_str());
-
-  TF1 *fH;
-  TF1 *fN;
-  if(gsFit){
-     fH = ff.FitGSStates(hIn);
-     fN = ff.GetFunc();
-     fN->SetRange(0,800);
-     fN->SetNpx(5000);
-  } else fH = ff.GetFunc();
-
-  fH->SetRange(0,800);
-  fH->SetNpx(5000);
 
   TF1 *fS = new TF1("fS",sf,0,800,0);
   fS->SetNpx(5000);
   fS->SetLineColor(kBlue);
+
+    //Final corrections before writing to file
+  hIn->GetXaxis()->SetRangeUser(20,120);
+  hIn->GetYaxis()->SetRangeUser(0,1200);
+  hIn->SetLineColor(kBlack);
+  hIn->SetLineWidth(2);
+  hIn->SetTitle(inputFilename.c_str());
 
   TFile *fOut = new TFile(outputFilename.c_str(),"RECREATE");
   hIn->Write();
@@ -203,9 +214,42 @@ int main(int argc, char **argv){
   if(gsFit) fN->Write();
   fS->Write();
 
+  TCanvas *c1 = new TCanvas("c1","c1",800,800);
+  hIn->Draw();
+  if(gsFit) fN->Draw("same");
+  else fH->Draw("same");
+  
+  const int ngs = ff.GetNgauss();
+  if(ngs>0){
+    TF1  *fgs[ngs];
+    for (int igs=0; igs<ngs; igs++){
+      fgs[igs] = new TF1(Form("fgs%d",igs),gauss,0,500,3);
+      fgs[igs]->SetParameters(ff.GetGaussPars(igs));
+      fgs[igs]->SetNpx(2000);
+      fgs[igs]->SetLineColor(kViolet+1+igs);
+      fgs[igs]->SetLineStyle(9);
+      fgs[igs]->Write();
+      fgs[igs]->Draw("same");
+    }
+  }
+  const int nld = ff.GetNlandau();
+  if(nld>0){
+    TF1  *fld[nld];
+    for (int ild=0; ild<nld; ild++){
+      fld[ild] = new TF1(Form("fld%d",ild),"[2]*TMath::Landau(x,[0],[1],0)",0,500);
+      fld[ild]->SetParameters(ff.GetLandauPars(ild));
+      fld[ild]->SetNpx(2000);
+      fld[ild]->SetLineColor(kViolet+1+ild);
+      fld[ild]->SetLineStyle(9);
+      fld[ild]->Write();
+      fld[ild]->Draw("same");
+    }
+  }
+
+  c1->Write();
+
   fOut->Close();
   fIn->Close();
-  
   
   return 0;
 }

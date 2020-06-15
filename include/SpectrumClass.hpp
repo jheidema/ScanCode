@@ -20,8 +20,10 @@ class SpectrumFunc{
 
      void SetFeedR(std::map<double,double> feedIn) {feedR.clear(); feedR = feedIn;};
      void SetVerbose(bool kIn){kVerbose=kIn;}
+     //void SortGS();
      void PrintExBR();
      std::vector< std::pair<double, double> > GetGSInfo(){return gsInfo;};
+     //std::vector< std::pair<double, double> > GetSortedGSInfo(){SortGS(); return gsInfo;};
 
      std::vector< std::pair<double, double> > stInfo;
      std::vector< std::pair<double, double> > gsInfo;

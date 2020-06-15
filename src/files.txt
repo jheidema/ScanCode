@@ -1,6 +1,7 @@
 src/ConfigReader.cpp
 src/FullSpecFunc.cpp
-src/fullFuncClass.cpp
+src/FullFuncClass.cpp
+src/FitFuncClass.cpp
 src/SpectrumClass.cpp
 src/optionHandler.cpp
 src/tofFuncClass.cpp

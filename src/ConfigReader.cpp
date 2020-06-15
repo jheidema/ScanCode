@@ -12,6 +12,8 @@ ConfigReader::ConfigReader(){
   SetValidNames();
   stob.insert(std::make_pair("true",true));
   stob.insert(std::make_pair("false",false));
+
+  kVerbose = false;
 };
 
 ConfigReader::~ConfigReader(){
@@ -45,6 +47,9 @@ void ConfigReader::SetValidNames(){
   valids.insert(std::make_pair("GSScale","gscalc"));
   valids.insert(std::make_pair("gsScale","gscalc"));
 
+  valids.insert(std::make_pair("FuncFile","ffile"));
+  valids.insert(std::make_pair("funcfile","ffile"));
+
   return;
 }
 
@@ -59,7 +64,7 @@ void ConfigReader::PrintLine(std::string line){
 
 bool ConfigReader::Import(){
   bool kRead = true;
-  //cout << "ConfigReader::Import: Reading Config File\n";
+  if(kVerbose) cout << "ConfigReader::Import: Reading Config File\n";
   std::ifstream infile;
   infile.open(filename,std::ifstream::in);
   getline(infile,lineString);
@@ -74,6 +79,8 @@ bool ConfigReader::Import(){
 
         std::stringstream ss(lineString);
         ss >> first >> second;
+        if(kVerbose) cout << "[CONFIG LINE] " << first.c_str() << " " << second.c_str() << endl;
+        
         if(IsValid(first)) namemap.insert(std::make_pair(valids[first],second));  
         
         else {
