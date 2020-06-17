@@ -58,6 +58,7 @@ vector<vector<string>> FileReader::LoadFile(){
                 std::vector<std::string> linevec(first, last);
                 //std::copy(vstrings.begin(), vstrings.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
                 ftext.push_back(linevec);
+                if(kVerbose) cout << "[FILE READER (" << filename << ")]: " << lineString.c_str() << endl;
             }
         }
     }

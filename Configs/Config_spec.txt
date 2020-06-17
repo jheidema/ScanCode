@@ -19,5 +19,9 @@ GSFlag      false
 GSFit       true
 #GSScale    0.5
 
+FitTail false
+DrawDist false
+DrawFuncs true
+
 #File w/ Additional Functions
 FuncFile FitInfo/functions.txt

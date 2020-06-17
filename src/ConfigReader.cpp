@@ -50,6 +50,15 @@ void ConfigReader::SetValidNames(){
   valids.insert(std::make_pair("FuncFile","ffile"));
   valids.insert(std::make_pair("funcfile","ffile"));
 
+  valids.insert(std::make_pair("TailFit","tailfit"));
+  valids.insert(std::make_pair("FitTail","tailfit"));
+
+  valids.insert(std::make_pair("DrawDist","drawdist"));
+  valids.insert(std::make_pair("drawdist","drawdist"));
+
+  valids.insert(std::make_pair("DrawFuncs","drawNfunc"));
+  valids.insert(std::make_pair("drawfuncs","drawNfunc"));
+
   return;
 }
 

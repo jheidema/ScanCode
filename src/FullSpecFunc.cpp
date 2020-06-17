@@ -45,6 +45,10 @@ void FullSpecFunc::AddFuncs(FitFuncClass &gff, const char *filename_){
             gff.AddLandau(stod(ftext.at(iff).at(1)),stod(ftext.at(iff).at(2)),stod(ftext.at(iff).at(3)));
             nld++;
         }
+        else if(funcname=="nufunc" || funcname=="nu"){
+            gff.AddNuFunc(stod(ftext.at(iff).at(1)),stod(ftext.at(iff).at(2)));
+            nnu++;
+        }
     }
     return;
 }
@@ -88,13 +92,17 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn){
 
     gf.SetBGParams(nBP,bArray);
     AddFuncs(gf,funcfilename);        
-    if(kVerbose) cout << "nLandau: " << gf.GetNLand() << endl;
+    //if(kVerbose) cout << "nLandau: " << gf.GetNLand() << endl;
 
     int nF = tf.GetNFuncs();
+    
+    int nN = gf.GetNNu();
+
     std::vector< std::pair<double, double> > gsInfo = sf.GetGSInfo();
     int nGS = gsInfo.size();
-    int nfc = nF+nGS;
-    int np = (nF+nGS)*2;
+    
+    int nfc = nF+nGS+nN;
+    int np = nfc*2;
     gf.SetNFuncs(nfc);
     
     if(kVerbose){
@@ -106,6 +114,7 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn){
     double rlo,rhi;
     double told=0.0;
     double tnew=0.0;
+    double tgate = 0.500;
     for (int is=0; is < np; is++) fFit->FixParameter(is,0);  //Fix parameters first so subsequent peak parameters aren't used
     
     for (int is=0; is < nfc; is++){
@@ -113,31 +122,48 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn){
             fFit->FixParameter(2*is,tf.GetParam(2*(is)));
             fFit->FixParameter(2*is+1,tf.GetParam(2*(is)+1));
             if(kVerbose) cout << "Fixing peak: " << tf.GetParam(2*(is)) << " " << tf.GetParam(2*(is)+1) << "\n";
-            }
-        if (is>=nF) {
+        }
+        else if (is>=nF&&is<nF+nGS) {
             if((is-nF)==0) rlo = gsInfo.at(is-nF).first-5;
             //gf.SetNFuncs(is+1);
-            fFit->FixParameter(2*is,gsInfo.at(is-nF).first); //Fix TOF
             tnew  = gsInfo.at(is-nF).first;
             double an = gsInfo.at(is-nF).second;
             
-            if(an>10 && (tnew-told)>0.750){
+            fFit->FixParameter(2*is,tnew); //Fix TOF
+            
+            if(an>1 && (tnew-told)>tgate){
                 fFit->SetParameter(2*is+1,an); //Float amplitude
                 fFit->SetParLimits(2*is+1,0.001,1000.);
                 told = tnew;
-            } else fFit->FixParameter(2*is+1,an);
+                rhi  = tnew+10;
+                hIn->Fit(fFit,"QN","",rlo,rhi);
+            } else fFit->FixParameter(2*is+1,0.);
+            if(kVerbose) cout << "Setting GS Peak: " << tnew << " " << fFit->GetParameter(2*is+1) << "\n";
+        }
+        else if (is>=nF+nGS){
+            double tof=gf.n_tofs.at(is-(nF+nGS));
+                if (tof>tnew) tnew=tof;
+            double n_amp=gf.n_amps.at(is-(nF+nGS));
             
-            if(kVerbose) cout << "Setting peak: " << gsInfo.at(is-nF).first << " " << gsInfo.at(is-nF).second << "\n";
-            rhi  = gsInfo.at(is-nF).first+5;
-            hIn->Fit(fFit,"QN","",rlo,rhi);
+            fFit->SetParameter(2*is,tof);
+            fFit->SetParLimits(2*is,tof*0.97,tof*1.03);
+            fFit->SetParLimits(2*is+1,0.00001,1000);
+            fFit->SetParameter(2*is+1,n_amp);
             
-            //cout << fFit->GetNumberFreeParameters() << " " << fFit->GetNDF() << "\n" << rlo << " " << rhi << endl;
-            }
+            if(kVerbose) cout << "Setting Added Peak: " << tof << " " << n_amp << "\n";
+        }
+    }
+    rhi = tnew+20;
+
+    if(kFitTail){
+        TFitResultPtr r = hIn->Fit(fFit,"QNS","",25,500);
+        if(kVerbose) r->Print();
+    }
+    else{
+        if(kVerbose) hIn->Fit(fFit,"LN","",rlo,rhi); 
+        else hIn->Fit(fFit,"LQN","",rlo,rhi);
     }
     
-    //TFitResultPtr r = hIn->Fit(fFit,"NS","",25,200);
-    //if(kVerbose) r->Print();
-
     return fFit;
 }
 #endif

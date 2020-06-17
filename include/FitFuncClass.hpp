@@ -32,26 +32,24 @@ class FitFuncClass {
         vector<double> l_amps;
         int nLand=0;
     
+        vector<double> n_tofs;
+        vector<double> n_amps;
+        int nNu=0;
+
     FitFuncClass();
     FitFuncClass(int nP, double *initP);
     ~FitFuncClass();
     void SetBGParams(int nP, double *bkP);
     void SetNFuncs(int nfIn){nFuncs=nfIn;};
     
-    void AddGaus(double mean, double sigma, double amp){
-            g_means.push_back(mean); 
-            g_sigs.push_back(sigma); 
-            g_amps.push_back(amp); 
-            nGaus++; };
+    void AddGaus(double mean, double sigma, double amp);
     int GetNGaus(){return nGaus;};
 
-    void AddLandau(double mpv, double sigma, double amp){
-            l_mpvs.push_back(mpv);
-            l_sigmas.push_back(sigma);
-            l_amps.push_back(amp);
-            nLand++;
-    };
+    void AddLandau(double mpv, double sigma, double amp);
     int GetNLand(){return nLand;};
+
+    void AddNuFunc(double tof, double amp);
+    int GetNNu(){return nNu;};
 
     int  GetNFuncs() {return nFuncs;};
     int  GetNBP() {return nBP;};

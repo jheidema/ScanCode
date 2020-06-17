@@ -28,6 +28,8 @@ class FullSpecFunc {
     TF1* GenerateFitFunc(TH1D* hIn);
 
     void SetGSCalc(bool kIN) {kGS = kIN;};
+    void SetTailFit(bool kIN) {kFitTail=kIN;};
+
     void AddFuncs(FitFuncClass &gff, const char *filename_);
     void SetFuncFileName(const char *filename_){funcfilename=filename_;};
     FullFuncClass GetFuncObj(){return tf;};
@@ -82,9 +84,11 @@ class FullSpecFunc {
     int nFuncs;
     int ngs;
     int nld;
+    int nnu;
 
     bool kGS = false;
     bool kVerbose = false;
+    bool kFitTail = false;
 
     private:
         double pars[3]={0};

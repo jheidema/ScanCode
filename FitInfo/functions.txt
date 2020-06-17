@@ -1,5 +1,23 @@
 #funcname   par0 par1 par3 ....
 #gaus    51  0.5 150
-gaus    65.5  4.5  300
-landau    47.5  1.0  2000
+#gaus    64.5  5  200
+#landau    47.5  1.0  2000
 #landau    67  5   1000
+
+### Single Neutron Responses ###
+nufunc  29  20
+nufunc  52  50
+nufunc  58.5  50
+nufunc  60  50
+nufunc  62  50
+nufunc  65  50
+nufunc  70  100
+nufunc  75  100
+nufunc  77  100
+nufunc  87  50
+nufunc  94  50
+nufunc  104 50
+nufunc  109 50
+
+#nufunc  122 50
+#nufunc  125 50

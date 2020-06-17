@@ -23,6 +23,26 @@ using namespace std;
 
 string errstring = "[ERROR] FillSpectrum::main >>> ";
 
+
+void PlotIndividualFuncs(TF1 *fIn){
+  gPad->cd();
+  int np = fIn->GetNpar();
+  const int nf = np/2;
+  TF1 *f1[nf];
+  for (int i=0;i<nf;i++){
+    f1[i] = new TF1(Form("nf%d",i),calcResponse,0,500,2);
+    f1[i]->SetNpx(3000);
+    f1[i]->SetParameters(fIn->GetParameter(i*2),fIn->GetParameter(i*2+1));
+    f1[i]->SetLineWidth(2);
+    if(fIn->GetParameter(i*2+1)>0.005){
+      if(fIn->GetParError(i*2+1)>0.0001){f1[i]->SetLineColor(kBlue); f1[i]->SetLineStyle(9);}
+      else f1[i]->SetLineColor(kMagenta);
+    f1[i]->Draw("same");
+    }
+  }
+  return;
+}
+
 int main(int argc, char **argv){
 
   gROOT->SetBatch(true);
@@ -104,6 +124,10 @@ int main(int argc, char **argv){
 
   bool gsFlag = cr.GetGSFlag();
   bool gsFit = cr.GetGSFitFlag();
+  bool kTail = cr.GetTailFitFlag();
+  bool kDrawDist = cr.GetDrawDistFlag();
+  bool kDrawNFuncs = cr.GetDrawFuncsFlag();
+
   if(gsFlag && gsFit) {
       cout << errstring << "Flag set for GS branching ratio and fitting. Must be exclusive.\n"; 
       return 1;
@@ -165,6 +189,7 @@ int main(int argc, char **argv){
   FullSpecFunc ff(kVerbose);
   ff.SetInfoFile(LevelFilename.c_str());
   ff.SetGSCalc(gsFlag);
+  ff.SetTailFit(kTail);
   ff.SetFuncFileName(FunctionFilename.c_str());
 //  ff.GenerateSpecFunc(hIn, false);
 
@@ -202,7 +227,7 @@ int main(int argc, char **argv){
   fS->SetLineColor(kBlue);
 
     //Final corrections before writing to file
-  hIn->GetXaxis()->SetRangeUser(20,120);
+  hIn->GetXaxis()->SetRangeUser(20,200);
   hIn->GetYaxis()->SetRangeUser(0,1200);
   hIn->SetLineColor(kBlack);
   hIn->SetLineWidth(2);
@@ -219,9 +244,10 @@ int main(int argc, char **argv){
   if(gsFit) fN->Draw("same");
   else fH->Draw("same");
   
+  
   const int ngs = ff.GetNgauss();
-  if(ngs>0){
-    TF1  *fgs[ngs];
+  TF1  *fgs[ngs];
+  if(ngs>0&&kDrawDist){
     for (int igs=0; igs<ngs; igs++){
       fgs[igs] = new TF1(Form("fgs%d",igs),gauss,0,500,3);
       fgs[igs]->SetParameters(ff.GetGaussPars(igs));
@@ -232,9 +258,10 @@ int main(int argc, char **argv){
       fgs[igs]->Draw("same");
     }
   }
+  
   const int nld = ff.GetNlandau();
-  if(nld>0){
-    TF1  *fld[nld];
+  TF1  *fld[nld];
+  if(nld>0&&kDrawDist){
     for (int ild=0; ild<nld; ild++){
       fld[ild] = new TF1(Form("fld%d",ild),"[2]*TMath::Landau(x,[0],[1],0)",0,500);
       fld[ild]->SetParameters(ff.GetLandauPars(ild));
@@ -245,6 +272,8 @@ int main(int argc, char **argv){
       fld[ild]->Draw("same");
     }
   }
+
+  if(kDrawNFuncs&&gsFit) PlotIndividualFuncs(fN);
 
   c1->Write();
 

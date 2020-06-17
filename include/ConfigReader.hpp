@@ -22,6 +22,10 @@ class ConfigReader: public FileReader {
         std::string GetFuncFileName(){return namemap["ffile"];};
              bool   GetGSFlag(){if(namemap.count("gsflag")==0) return false; else return stob[namemap["gsflag"]];};
              bool   GetGSFitFlag(){if(namemap.count("gsfit")==0) return false; else return stob[namemap["gsfit"]];};
+             bool   GetTailFitFlag(){if(namemap.count("tailfit")==0) return false; else return stob[namemap["tailfit"]];};
+             bool   GetDrawDistFlag(){if(namemap.count("drawdist")==0) return false; else return stob[namemap["drawdist"]];};
+             bool   GetDrawFuncsFlag(){if(namemap.count("drawNfunc")==0) return false; else return stob[namemap["drawNfunc"]];};
+             
              double GetGSScale(){
                     if(namemap.find("gscalc") != namemap.end()){
                         return std::stod(namemap.at("gscalc"));
