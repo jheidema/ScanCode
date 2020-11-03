@@ -2,22 +2,42 @@
 #gaus    51  0.5 150
 #gaus    64.5  5  200
 #landau    47.5  1.0  2000
-#landau    67  5   1000
+#landau    120    30    200
 
 ### Single Neutron Responses ###
-nufunc  29  20
-nufunc  52  50
-nufunc  58.5  50
-nufunc  60  50
+#nufunc  19.25  10
+#nufunc  21.25   10
+#nufunc  22.25   10
+#nufunc  24  10
+#nufunc  26.8  10
+#nufunc  29  20
+nufunc  34  20
+#nufunc  48.5  100
+nufunc  51  50
+#nufunc  58.5  50
+nufunc  59  50
 nufunc  62  50
 nufunc  65  50
+nufunc  67  25
 nufunc  70  100
-nufunc  75  100
-nufunc  77  100
-nufunc  87  50
+#nufunc  75  60
+nufunc  79  15
+nufunc  86  50
+nufunc  91  50
 nufunc  94  50
-nufunc  104 50
-nufunc  109 50
-
-#nufunc  122 50
-#nufunc  125 50
+##nufunc  100  50
+nufunc  104 100
+nufunc  108.5 50
+nufunc  111 50
+nufunc  119 20
+nufunc  126 20
+nufunc 	136 20
+nufunc  144 20
+nufunc  160 20
+nufunc  175 20
+nufunc  205 20
+nufunc  225 20
+nufunc  264 20
+nufunc  277 20
+nufunc  295 20
+nufunc  340 20

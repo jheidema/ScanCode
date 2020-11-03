@@ -131,7 +131,7 @@ double FitBkgd(double *x, double *p){
     //else y = gammaBkgd(x,p) + hypBkgd(x,&p[6]);
     //else y = p1*exp(-p2*(xx-p0))+p3*exp(-p4*(xx-p0))+p5 + p6*cosh(p7*asinh(p8*(xx-p9)))+p10;
 
-    if(xx>27&&xx<300) TF1::RejectPoint();
+    if(xx>25&&xx<450) TF1::RejectPoint();
     if(p[0]==0) return 0;
     return y;
 }

@@ -37,7 +37,7 @@ TF1* BkgdFunc(TH1D * hIn, bool kHyp){
     fbkgd->SetParLimits(2,0,5);
     fbkgd->SetParLimits(3,100,1E6);
     fbkgd->SetParLimits(4,0,5);
-    fbkgd->SetParLimits(5,2,50);
+    fbkgd->SetParLimits(5,2,250);
     fbkgd->SetParLimits(6,0,5);
 
     for (int ig=0;ig<nPars;ig++){

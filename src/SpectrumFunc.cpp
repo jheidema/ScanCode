@@ -19,11 +19,11 @@ vector< pair<double, double> > stInfo;
 map<double, double> feedR;
 const TGraph *gEff = Efficiencies::VandleEff();
 
-double CalcEn(double tof){
+double CalcEn(double tof){ //return MeV
     double ee = 0.5*mn/pow(c,2)*pow(100/tof,2);
     return ee;
 }
-double CalcTOF(double ee){
+double CalcTOF(double ee){ //return ns
     double tof = sqrt(0.5*mn/ee)*(100.0/c);
     return tof;
 }

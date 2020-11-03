@@ -22,6 +22,7 @@ class SpectrumFunc{
      void SetVerbose(bool kIn){kVerbose=kIn;}
      //void SortGS();
      void PrintExBR();
+     std::map<double, std::pair<double, double> > GetGNInfo(){return exBR;};
      std::vector< std::pair<double, double> > GetGSInfo(){return gsInfo;};
      //std::vector< std::pair<double, double> > GetSortedGSInfo(){SortGS(); return gsInfo;};
 

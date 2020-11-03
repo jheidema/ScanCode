@@ -60,7 +60,7 @@ class FitFuncClass {
         if(nGaus>0){
             for (int ig=0; ig<nGaus; ig++){ 
                 gArray[0] = g_means.at(ig); gArray[1] = g_sigs.at(ig); gArray[2] = g_amps.at(ig);
-                res += gauss(x,gArray); 
+                res += gauss(x,gArray); //amps.at(ig)*exp(-0.5*pow((x[0]-means.at(ig))/sigs.at(ig),2));//*1./(sigs.at(ig)*sqrt(2*3.142));
             }
         }
         if(nLand>0){

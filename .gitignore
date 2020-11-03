@@ -1,8 +1,17 @@
 depricated/
 Hists/
 imgs/
+Imgs/
+TSV/
+output/
+
 .vscode/
 *_files/
+
+*.tsv
+
+*/fromRobert/
+*.summary
 
 *.ps
 *.pdf

@@ -4,7 +4,13 @@
 #RootHist	Hists/Birk1p1/In134_nToF.root
 #RootHist	Hists/Birk2p0/In134_nTOF_sQdc500_Qdc500.root
 #RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc500.root
-RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc50.root
+#RootHist	Hists/Birk2p0/In134_nTOF_750ps_sQdc500_Qdc50.root
+#RootHist	Hists/Birk2p0/In134_nToF_birk_sQdc250.root
+#RootHist	Hists/134In_nTOF_sQdc250.root
+#RootHist	Hists/134In_nTOF_sQdc250_Qdc50_noNeighbor.root
+#RootHist	Hists/134In_nTOF_sQdc250_Qdc50_noNeighbor_2.root
+#RootHist	Hists/134In_nTOF_sQdc250_Qdc50_noDoub_500ps.root
+RootHist	Hists/In134_nToF_dual500ps.root
 
 #LevelInfo	FitInfo/In134peaks_all.txt
 #LevelInfo	FitInfo/In134peaks_gammas.txt
@@ -19,8 +25,11 @@ GSFlag      false
 GSFit       true
 #GSScale    0.5
 
+GSFloat true
+GammaNuFit true
+
 FitTail false
-DrawDist false
+DrawDist true 
 DrawFuncs true
 
 #File w/ Additional Functions

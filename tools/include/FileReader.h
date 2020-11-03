@@ -17,11 +17,9 @@ class FileReader {
         //FileReader(char const *filename_);
         virtual bool Import();
         virtual std::string GetLine();
-        vector<string> GetRow();
         vector<vector<string>> LoadFile();
         virtual bool OpenFile();
         virtual bool OpenFile(const char* filename_);
-        virtual bool CloseFile();
         virtual bool EoF(){ return infile.eof();};
         virtual bool SetFileName(char const *filename_=NULL){
             if (filename_==NULL) return false;
@@ -34,18 +32,7 @@ class FileReader {
                     return false;
                 }
             };
-        virtual bool IsOpen(){
-            return infile.is_open();
-        }
         void SetVerbose(bool kIn){kVerbose = kIn;};
-        void Reset(){
-            filename = "";
-            nL = 0;
-            nlines=0;
-            lineString.clear();
-            ftext.clear();
-            CloseFile();
-        }
 
         const char *filename;
         std::ifstream infile;
@@ -53,7 +40,7 @@ class FileReader {
         int nlines;
         std::string lineString;
         vector<vector<string>> ftext;
-        bool kVerbose = false;
+        bool kVerbose=false;
 };
 
 

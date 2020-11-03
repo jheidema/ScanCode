@@ -59,6 +59,11 @@ void ConfigReader::SetValidNames(){
   valids.insert(std::make_pair("DrawFuncs","drawNfunc"));
   valids.insert(std::make_pair("drawfuncs","drawNfunc"));
 
+  valids.insert(std::make_pair("GSFloat","floatgs"));
+  
+  valids.insert(std::make_pair("GammaNuFit","gammanufit"));
+  valids.insert(std::make_pair("GNFit","gammanufit"));
+
   return;
 }
 

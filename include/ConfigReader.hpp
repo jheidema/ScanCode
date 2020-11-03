@@ -25,6 +25,8 @@ class ConfigReader: public FileReader {
              bool   GetTailFitFlag(){if(namemap.count("tailfit")==0) return false; else return stob[namemap["tailfit"]];};
              bool   GetDrawDistFlag(){if(namemap.count("drawdist")==0) return false; else return stob[namemap["drawdist"]];};
              bool   GetDrawFuncsFlag(){if(namemap.count("drawNfunc")==0) return false; else return stob[namemap["drawNfunc"]];};
+             bool   GetGSFloat(){if(namemap.count("floatgs")==0) return false; else return stob[namemap["floatgs"]];};
+             bool   GetGNFit(){if(namemap.count("gammanufit")==0) return false; else return stob[namemap["gammanufit"]];};
              
              double GetGSScale(){
                     if(namemap.find("gscalc") != namemap.end()){

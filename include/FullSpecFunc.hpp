@@ -24,11 +24,12 @@ class FullSpecFunc {
     void SetInfoFile(const char *filename_){filename = filename_;}; 
     bool OpenFile();
     void GenerateSpecFunc();
-    void GenerateSpecFunc(TH1D *hIn, bool kHyp=false);
-    TF1* GenerateFitFunc(TH1D* hIn);
+    void GenerateSpecFunc(TH1D *hIn, bool kPrint=false);
+    TF1* GenerateFitFunc(TH1D* hIn, bool kGNFit=false);
 
     void SetGSCalc(bool kIN) {kGS = kIN;};
     void SetTailFit(bool kIN) {kFitTail=kIN;};
+    void SetGSFloat(bool kIN) {kFloatGS=kIN;};
 
     void AddFuncs(FitFuncClass &gff, const char *filename_);
     void SetFuncFileName(const char *filename_){funcfilename=filename_;};
@@ -67,6 +68,11 @@ class FullSpecFunc {
         return pars;
         };
 
+    int GetNFuncInput(){return gf.GetNNu();}
+    
+    std::map<double, std::pair<double, double> > GetSpectrumGNInfo() {return sf.GetGNInfo();};
+    int GetNGammaNuStates() {return tf.GetNFuncs();};
+
     FileReader fr;
     FileReader funcf;
     SpectrumFunc sf;
@@ -80,15 +86,16 @@ class FullSpecFunc {
     TF1 *fOut;
     double *bArray;
     
-    int nBP;
-    int nFuncs;
-    int ngs;
-    int nld;
-    int nnu;
+    int nBP=0;
+    int nFuncs=0;
+    int ngs=0;
+    int nld=0;
+    int nnu=0;
 
     bool kGS = false;
     bool kVerbose = false;
     bool kFitTail = false;
+    bool kFloatGS = false;
 
     private:
         double pars[3]={0};

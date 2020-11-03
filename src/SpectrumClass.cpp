@@ -81,7 +81,7 @@ void SpectrumFunc::LoadInput(const char *fileName, bool kGS, bool kPrint){
         double gEff;
         double en = CalcEn(t0);
 
-        if (gamE>50.) gEff = 100./AbsHPGe_Eff(gamE)*1.0;
+        if (gamE>50.) gEff = 100./AbsHPGe_Eff(gamE);
         else {cout << "Gamma E too low for eff. correction\n"; gEff=0.25;}
         
         stInfo.push_back(std::make_pair(t0, An*gEff));
@@ -94,7 +94,6 @@ void SpectrumFunc::LoadInput(const char *fileName, bool kGS, bool kPrint){
             gsInfo.push_back(std::make_pair(tgs,An*gEff*neffR*gsBR));
         if(kGS){
             stInfo.push_back(std::make_pair(tgs,An*gEff*neffR*gsBR));
-            //stInfo.push_back(std::make_pair(tgs,An*gEff*feedR.at(1561)*neffR*fGS*gsBR));
             if(kVerbose) printf("GS Transition: %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n",t0,en,tgs,gEn,neffR,An*gEff*neffR*gsBR);
         }
         }

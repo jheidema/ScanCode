@@ -1,4 +1,4 @@
-#include "tofFuncClass.hpp"
+#include "../include/tofFuncClass.hpp"
 
 #ifdef TofFuncClass_hpp
 
@@ -37,7 +37,8 @@ void tofFuncClass::SortParams(){
     for(int ip=2; ip<nFuncs*npars; ip=ip+2){
         pvals[0]=params.at(ip);
         pvals[1]=params.at(ip+1);
-        for(it = copy_vec.begin(); it<copy_vec.end(); it++){
+        for(it = copy_vec.begin(); it<copy_vec.end(); it=it+2){
+            cout << params.at(ip) << " " << *it << endl;
             if(params.at(ip)<*it)  break;
         }
         copy_vec.insert(it,pvals,pvals+2);   

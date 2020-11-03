@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 
@@ -22,24 +21,35 @@
 using namespace std;
 
 string errstring = "[ERROR] FillSpectrum::main >>> ";
+bool kVerbose = false;
+bool kPrintEn = false;
 
+const double mn = 939.57; //MeV/c^2
+const double c = 29.98; //cm/ns
 
-void PlotIndividualFuncs(TF1 *fIn){
+void PlotIndividualFuncs(TF1 *fIn, int nNFI, int ng){
   gPad->cd();
   int np = fIn->GetNpar();
   const int nf = np/2;
   TF1 *f1[nf];
+  int n = nf-nNFI;
+  if(kVerbose) cout << "N Added Functions: " << nNFI << "\nN Input Functions: " << n << endl;
   for (int i=0;i<nf;i++){
     f1[i] = new TF1(Form("nf%d",i),calcResponse,0,500,2);
     f1[i]->SetNpx(3000);
     f1[i]->SetParameters(fIn->GetParameter(i*2),fIn->GetParameter(i*2+1));
     f1[i]->SetLineWidth(2);
-    if(fIn->GetParameter(i*2+1)>0.005){
-      if(fIn->GetParError(i*2+1)>0.0001){f1[i]->SetLineColor(kBlue); f1[i]->SetLineStyle(9);}
-      else f1[i]->SetLineColor(kMagenta);
+    if(i>=ng&&i<n){
+      f1[i]->SetLineColor(kBlue); 
+      if(fIn->GetParError(i*2)!=0) f1[i]->SetLineStyle(9);
+    }
+    else if (i<ng) f1[i]->SetLineColor(kMagenta);
+    
+    else if(i>=n) {f1[i]->SetLineColor(kCyan); f1[i]->SetLineStyle(9);}
+    
     f1[i]->Draw("same");
     }
-  }
+
   return;
 }
 
@@ -52,11 +62,10 @@ int main(int argc, char **argv){
   handler.add(optionExt("HFmulti",required_argument, NULL,'M',"<HFfilename>","Specify text file with paths to HF calculations (can't be used with -i)."));
   handler.add(optionExt("output", required_argument, NULL,'o', "<filename>", "Specify the name of the output file."));
   handler.add(optionExt("Config",required_argument,NULL,'c',"<ConfigFile>","Specify Config file for setting intensities and ROOT stogram file"));
-  handler.add(optionExt("verbose",optional_argument,NULL,'v',"","Print information for GS feeding and Ex Branching Ratios"));
-  //handler.add(optionExt("Histinput",required_argument, NULL,'H',"<HistFilename>","Specify Root File with TOF histogram."));
-  //handler.add(optionExt("LevelInfo",required_argument,NULL,'l',"<LevelFile>","Specify file with level structure info"));
-  //handler.add(optionExt());
-
+  handler.add(optionExt("verbose",optional_argument,NULL,'v',"","Print debug and information for GS feeding and Ex Branching Ratios"));
+  handler.add(optionExt("PrintEnergy",optional_argument,NULL,'P',"","Print deconvolved neutron energies and intensities"));
+  
+  
   if (argc<2) {cout << errstring << "Incorrect number of arguments.\n";
    handler.help(argv[0]); 
    return 1;
@@ -65,7 +74,7 @@ int main(int argc, char **argv){
   if(!handler.setup(argc, argv))
 	  return 1;
 
-  if(handler.getOption(0)->active&&handler.getOption(1)->active){
+  if(handler.getOption(0)->active && handler.getOption(1)->active){
     cout << errstring << "Options [-i] and [-M] must be used exclusively." << endl;
     return 1;
   }
@@ -106,8 +115,10 @@ int main(int argc, char **argv){
   std::string LevelFilename;
   std::string FunctionFilename;
   
-  bool kVerbose = false;
+  //kVerbose = false;
   if(handler.getOption(4)->active) kVerbose = true;
+  //kPrintEn = false;
+  if(handler.getOption(5)->active) kPrintEn = true;
 
 
   ConfigReader cr;
@@ -127,6 +138,8 @@ int main(int argc, char **argv){
   bool kTail = cr.GetTailFitFlag();
   bool kDrawDist = cr.GetDrawDistFlag();
   bool kDrawNFuncs = cr.GetDrawFuncsFlag();
+  bool kFloatGS = cr.GetGSFloat();
+  bool kGamNuFit = cr.GetGNFit();
 
   if(gsFlag && gsFit) {
       cout << errstring << "Flag set for GS branching ratio and fitting. Must be exclusive.\n"; 
@@ -186,16 +199,20 @@ int main(int argc, char **argv){
     return 1;
   }  
   
+  hIn->GetXaxis()->UnZoom();
+  hIn->GetYaxis()->UnZoom();
+
   FullSpecFunc ff(kVerbose);
   ff.SetInfoFile(LevelFilename.c_str());
   ff.SetGSCalc(gsFlag);
+  ff.SetGSFloat(kFloatGS);
   ff.SetTailFit(kTail);
   ff.SetFuncFileName(FunctionFilename.c_str());
 //  ff.GenerateSpecFunc(hIn, false);
 
   TF1 *fN;
   if(gsFit){
-    fN = ff.GenerateFitFunc(hIn);
+    fN = ff.GenerateFitFunc(hIn,kGamNuFit);
     fN->SetRange(0,800);
     fN->SetNpx(5000);
     fN->SetLineColor(kRed);
@@ -228,7 +245,9 @@ int main(int argc, char **argv){
 
     //Final corrections before writing to file
   hIn->GetXaxis()->SetRangeUser(20,200);
+  hIn->GetXaxis()->SetTitle("TOF (ns)");
   hIn->GetYaxis()->SetRangeUser(0,1200);
+  hIn->GetYaxis()->SetTitle("Counts/0.75 ns");
   hIn->SetLineColor(kBlack);
   hIn->SetLineWidth(2);
   hIn->SetTitle(inputFilename.c_str());
@@ -240,7 +259,7 @@ int main(int argc, char **argv){
   fS->Write();
 
   TCanvas *c1 = new TCanvas("c1","c1",800,800);
-  hIn->Draw();
+  hIn->Draw("P E");
   if(gsFit) fN->Draw("same");
   else fH->Draw("same");
   
@@ -272,13 +291,63 @@ int main(int argc, char **argv){
       fld[ild]->Draw("same");
     }
   }
+  
+  FILE *fBGT;
 
-  if(kDrawNFuncs&&gsFit) PlotIndividualFuncs(fN);
+  TGraph *verr = Efficiencies::VandleBeamErr();
 
+  TF1 *f1 = new TF1("f1",calcResponse,0,800,2);
+
+  int ng=0;
+  if(kPrintEn&&gsFit){
+    fBGT = fopen("LevelIntensities.txt","w");
+    
+    map<double,pair<double,double>> GNInfo = ff.GetSpectrumGNInfo();
+    for (std::map<double,pair<double,double>>::iterator itm = GNInfo.begin(); itm!=GNInfo.end(); itm++){
+      double Ex = itm->first;
+      double An = itm->second.second;
+      double gamE = itm->second.first;
+      double En = (Ex-gamE-3620)/1000.;
+      double newAn = fN->GetParameter(50-(2*ng+1))*100./gEff->Eval(En);
+      double An_err = fN->GetParError(50-(2*ng+1))*100./gEff->Eval(En);
+      f1->SetParameters(fN->GetParameter(50-(2*ng)),fN->GetParameter(50-(2*ng+1)));
+      double IntAn = f1->Integral(0,600)*100./gEff->Eval(En);
+      
+      if(An_err<10000){
+      double p_err = An_err/newAn;
+      double e_err = verr->Eval(En)/100.;
+      //An_err = sqrt(pow(p_err,2)+pow(verr->Eval(En)/100.,2))*newAn;
+      printf("%.2f\t%.0f\t%.2f\t%.2f\t%.3f\t%.2f\t%.2f\n",Ex/1000., gamE, newAn, IntAn, IntAn*p_err, p_err, e_err);
+      fprintf(fBGT,"%.2f\t%.0f\t%.2f\t%.2f\t%.3f\n",Ex/1000., gamE, newAn, IntAn, IntAn*p_err);
+      }
+      ng++;
+    }
+
+    int nf = fN->GetNpar()/2;
+    int ni = ff.GetNGammaNuStates();
+    for (int i=ni;i<nf;i++){
+      double En = 0.5*mn/pow(c,2)*pow(100./fN->GetParameter(2*i),2);
+      double An = fN->GetParameter(2*i+1)*100./gEff->Eval(En);
+      double An_err = fN->GetParError(2*i+1)*100./gEff->Eval(En);
+      f1->SetParameters(fN->GetParameter(2*i),fN->GetParameter(2*i+1));
+      double IntAn = f1->Integral(0,600)*100./gEff->Eval(En);
+      
+      if(An_err<10000){
+      double p_err = An_err/An;
+      double e_err = verr->Eval(En)/100.;
+      //An_err = sqrt(pow(p_err,2)+pow(verr->Eval(En)/100.,2))*An;
+      printf("%.2f\t%.2f\t%.2f\t%.3f\t%.2f\t%.2f\n",En+3.62,En,IntAn,IntAn*p_err,p_err,e_err);
+      fprintf(fBGT,"%.2f\t%.2f\t%.2f\t%.3f\n",En+3.62,En,IntAn,IntAn*p_err);
+      }
+    }
+    fclose(fBGT);
+  }
+
+  int nNuInput = ff.GetNFuncInput();
+  if(kDrawNFuncs&&gsFit) PlotIndividualFuncs(fN, nNuInput, ng);
   c1->Write();
 
   fOut->Close();
   fIn->Close();
-  
   return 0;
 }

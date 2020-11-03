@@ -61,6 +61,7 @@ public :
    Long64_t    nEvent = 0;
    Int_t       nEntry;
    Int_t       nMulti;
+   Int_t       nOrder;
    Bool_t      g1560;
    Bool_t      g853;
    Bool_t      g2004;
@@ -75,10 +76,13 @@ public :
    Double_t    sQdc;
    std::vector<Double_t> cloverE;
    std::vector<Int_t> cloverNum;
+   std::vector<Double_t> cloverTime;
    Double_t cloverAB;
 
+   
    std::vector<Double_t> newTof;
-   std::vector<Double_t> newEn;
+   //std::vector<Double_t> newEn;
+   std::vector<Double_t> newQdc;
    std::vector<Int_t> newBar;
    Double_t Ehigh = 4.5;
    Int_t nBins = (Ehigh-0.1)/0.025;
@@ -250,6 +254,7 @@ void testClass::ZeroRootStruc(){
   ZeroVandStruc();
   cloverE.clear();
   cloverNum.clear();
+  cloverTime.clear();
   cloverAB = 0;
   g1560 = false;
   g853 = false;
@@ -258,9 +263,10 @@ void testClass::ZeroRootStruc(){
   nEntry = 0;
   nMulti = 0;
 
-  for (int i=0; i<26; i++) bN[i]=0;
   newTof.clear();
   newBar.clear();
+  newQdc.clear();
+  for (int i=0; i<26; i++) bN[i]=0;
 }
 
 void testClass::ZeroVandStruc(){
@@ -281,10 +287,11 @@ void testClass::CopyRootStruc(){
       double cEnergy = f_clover_vec_.At(ic).energy;
       cloverE.push_back(cEnergy);
       cloverNum.push_back(f_clover_vec_.At(ic).detNum);
-      if( cEnergy>140 ) cloverAB += cEnergy;
+      cloverTime.push_back(f_clover_vec_.At(ic).time);
+      if( cEnergy>150 ) cloverAB += cEnergy;
       if( cEnergy>1557 && cEnergy<1564 ) g1560=true;
-      if( cEnergy>850 && cEnergy<857) g853=true;
-      if( cEnergy>2001 && cEnergy<2005) g2004=true;
+      if( cEnergy>851 && cEnergy<857) g853=true;
+      if( cEnergy>2001 && cEnergy<2007) g2004=true;
     }
 
    //Copy Event Number for nToF multiplicity.

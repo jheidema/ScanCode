@@ -5,7 +5,7 @@
 #include <cmath>
 #include <vector>
 
-#include "calcResponse.hpp"
+#include "../include/calcResponse.hpp"
 
 using namespace std;
 
@@ -36,9 +36,9 @@ class tofFuncClass {
     double GetParam(int iP) {return params.at(iP);};
     vector<double> GetParams(){return params;};
     int  GetNFuncs(){return nFuncs;};
-    void PrintFuncParams(){for(int iF=0;iF<nFuncs;iF++) 
-                            cout << iF+1 << " " << params.at(iF*npars) << " " << params.at(iF*npars+1)<< endl;
-                        };
+    void PrintFuncParams(){
+                            for(int iF=0;iF<nFuncs;iF++) cout << iF+1 << " " << params.at(iF*npars) << " " << params.at(iF*npars+1)<< endl;
+                          };
     
     double operator() (double *x, double *p){
         if(kFit) for(int i=0; i<nFuncs*npars; i++) params.at(i) = p[i];//SetParams(p);
@@ -47,7 +47,6 @@ class tofFuncClass {
         for (int i=0; i<nFuncs; i++){
             for (int in=0; in<npars; in++){pArray[in] = p[i*npars+in];}// pArray[1] = p[i*npars+2];// pArray[2] = p[i*3+3];
             res += calcResponse(x,pArray);
-            //res = 0;
         } 
         return res + off;
     };

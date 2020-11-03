@@ -97,7 +97,7 @@ void addPeak(TH1F *hIn, Double_t offMax = 1.0, Bool_t kFix=false){
         kRun=true;
     }
 
-    tf.SortParams(); //sort parameters only after adding a new peak or before removing a peak
+    //tf.SortParams(); //sort parameters only after adding a new peak or before removing a peak
     
     if(inString=="-" || inString=="remove"){
         if(npeaks>0){
@@ -134,7 +134,7 @@ void addPeak(TH1F *hIn, Double_t offMax = 1.0, Bool_t kFix=false){
     npeaks = tf.GetNFuncs();
     
    if(npeaks>0 && kRun){
-    tf.SetFitBool(true);
+    //tf.SetFitBool(true);
     f1->Delete();
     f1 = new TF1("f1",tf,0,200,npars*npeaks+1);
     
@@ -142,22 +142,23 @@ void addPeak(TH1F *hIn, Double_t offMax = 1.0, Bool_t kFix=false){
     f1->SetLineWidth(4);
     f1->SetLineStyle(9);
     vector <double> fParams = tf.GetParams();
-    
     for(int i=0; i<npeaks; i++){
+        double t=fParams.at(i*npars);
+        double a=fParams.at(i*npars+1);
         if(pLock[i+1]){
-            f1->FixParameter(i*npars,fParams.at(i*npars));
-            f1->FixParameter(i*npars+1,fParams.at(i*npars+1));
+            f1->FixParameter(i*npars,t);
+            f1->FixParameter(i*npars+1,a);
         }else{
-            f1->SetParameter(i*npars,fParams.at(i*npars)); 
-            f1->SetParLimits(i*npars,fParams.at(i*npars)-1,fParams.at(i*npars)+1);
-            f1->SetParLimits(i*npars+1,0,Amax*1.2);
+            f1->SetParameter(i*npars,t); 
+            f1->SetParLimits(i*npars,t-1,t+1);
+            f1->SetParLimits(i*npars+1,0,a*2.0);
         }
     }
     f1->SetParameter(npeaks*npars,0.25);
     f1->SetParLimits(npeaks*npars,0.1,offMax);
     
-    if(fMode==0) hIn->Fit(f1,"QNL","",minT-3,maxT+10);
-    else if(fMode==1) hIn->Fit(f1,"QN","",minT-3,maxT+20);
+    if(fMode==0) hIn->Fit(f1,"QNL","",minT-3,maxT+3);
+    else if(fMode==1) hIn->Fit(f1,"QN","",minT-3,maxT+3);
 
     cout << "X^2/Ndf:" << f1->GetChisquare()/f1->GetNDF() << endl;
     tf.SetParams(f1->GetParameters());
@@ -171,7 +172,7 @@ void addPeak(TH1F *hIn, Double_t offMax = 1.0, Bool_t kFix=false){
     
         
     hIn->GetXaxis()->SetRangeUser(xlow,xhi);
-    hIn->GetYaxis()->SetRangeUser(0,Amax*1.3);
+    //hIn->GetYaxis()->SetRangeUser(0,Amax*1.3);
     TGaxis *a1 = MakeAxis(hIn);
     hIn->Draw();
     a1->Draw("same");

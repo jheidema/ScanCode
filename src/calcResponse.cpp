@@ -4,7 +4,7 @@
 
 double calcResponse(double *xx, double* p){
     double X = xx[0];
-    double t0 = p[0];
+    double t0 = p[0]+6.0;
     double AA = p[1];
     //double sigE = p[2];
     //double off = p[3];
@@ -40,6 +40,8 @@ double calcResponse(double *xx, double* p){
     d1=0.8*d1;
     k2=1.5*k2;
     d2=2.1*d2;
+    
+    t0 -= 6.0;
 
     double b1 = exp(k1*(k1+d1))/(1+pow(k1+d1,2));
     double b2 = exp(k1*(k1+d1)-(k1-k2)*(k2+d2))/(1+pow(k1+d1,2));
