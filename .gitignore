@@ -5,6 +5,11 @@ Imgs/
 TSV/
 output/
 
+*temp/
+
+*crap*.*
+*Crap*.*
+
 .vscode/
 *_files/
 

@@ -9,9 +9,7 @@
 
 #include "TGraphErrors.h"
 #include "TGraphAsymmErrors.h"
-#include "TGaxis.h"
 #include "TAttFill.h"
-#include "TLegend.h"
 #include "TH2F.h"
 #include "TH1I.h"
 #include "TF1.h"
@@ -30,20 +28,9 @@ double dx = 0.05;
 int fThresh;
 double thresh = 1E-5;
 int cType=0;
-double minE=4, maxE=10;
-bool gShade=false;
 
 double chi2Calc( vector<pair<double,pair<double,double>>> pIn);
 double chi2Err( vector<pair<double,pair<double,double>>> pIn);
-
-double calcTOF(double E){
-    return 100.0/29.98*sqrt(938.9/(2*E));
-}
-
-double calcErr(double E){
-    double tof = calcTOF(E);
-    return sqrt(pow(2*1.0/tof,2)+pow(2*0.03/1,2))*E;
-}
 
 double BreitWigner(double x, double *p){
     double xx = x;
@@ -100,21 +87,8 @@ class DWfunc {
 
 };
 
-const int nstates=3;
-int lwidth=2;
-
-int mstyle[nstates] = {20,21,22}; // filled markers
-//int mstyle[nstates] = {24,25,26}; // hollow markers
-//int mstyle[nstates] = {53,54,55}; // hollow markers, thick line
-int mcolor[nstates] = {1,1,1};
-int mfill[nstates] = {kCyan+4,kCyan-4,kCyan-2};
-int spins[nstates] = {7,3,9};
 
 void doorway(const char *filename_){
-
-    if(minE>maxE) {cout << "Invalid Energy Range. MinE must be less than MaxE." << endl; return;}
-    cout << "Setting SF threshold to " << thresh << endl;
-    
     //gStyle->SetEndErrorSize(8.5);
     gStyle->SetOptStat(0);
     gStyle->SetEndErrorSize(6);
@@ -124,22 +98,20 @@ void doorway(const char *filename_){
     vector<vector<string>> bgtS = bgtF.LoadFile();
     int nrow = bgtS.size();
     int ncol = bgtS.at(0).size();
+    vector<vector<double>> bgt;
+    vector<double> dummy;
     
-    TGraphAsymmErrors *gdata[3];
-    
+    TGraphAsymmErrors *g1561 = new TGraphAsymmErrors(); g1561->SetName("g1561");
+    TGraphAsymmErrors *g854 = new TGraphAsymmErrors(); g854->SetName("g854");
+    TGraphAsymmErrors *gGS = new TGraphAsymmErrors(); gGS->SetName("gGS");
+
+
     int fc[3] = {kCyan+3,kCyan-7,kCyan-3};
 
-    for (int i=0; i<nstates;i++){
-        
-        gdata[i] = new TGraphAsymmErrors();
-        gdata[i]->SetLineColor(mcolor[i]);
-        gdata[i]->SetMarkerColor(mcolor[i]);
-        gdata[i]->SetMarkerStyle(mstyle[i]);
-        gdata[i]->SetFillColor(mfill[i]);
-        if(gShade) gdata[i]->SetFillColorAlpha(mfill[i],0.75);
-        gdata[i]->SetMarkerSize(0.85);
-        gdata[i]->SetLineWidth(lwidth-1);
-    }
+    gGS->SetMarkerStyle(8); g1561->SetMarkerStyle(8); g854->SetMarkerStyle(8);
+    gGS->SetLineWidth(2); g1561->SetLineWidth(2); g854->SetLineWidth(2);
+    gGS->SetLineColor(kBlue); g1561->SetLineColor(kRed+2); g854->SetLineColor(kGreen+3);
+    gGS->SetMarkerColor(kBlue); g1561->SetMarkerColor(kRed+2); g854->SetMarkerColor(kGreen+3);
 
     double btemp; 
 
@@ -154,33 +126,23 @@ void doorway(const char *filename_){
         double e1561 = stod(bgtS.at(i).at(4));
         double e854 = stod(bgtS.at(i).at(6));
 
-        double err = calcErr(-1.*(-Ex+3.62+1.561));
 
-        if(bGS>0.0)  { 
-            gdata[0]->SetPoint(i,-Ex,bGS/bAll); 
-            gdata[0]->SetPointEYhigh(i,(bGS+eGS)/(bAll+eGS)-bGS/bAll); 
-            gdata[0]->SetPointEYlow(i,bGS/bAll-(bGS-eGS)/(bAll-eGS)); 
-            gdata[0]->SetPointEXhigh(i,err/2.);
-            gdata[0]->SetPointEXlow(i,err/2.);
+        if(bGS>0.0)  { gGS->SetPoint(i,-Ex,bGS/bAll); 
+            gGS->SetPointEYhigh(i,(bGS+eGS)/(bAll+eGS)-bGS/bAll); gGS->SetPointEYlow(i,bGS/bAll-(bGS-eGS)/(bAll-eGS)); 
         }
-        if(b854>0.0) {
-            btemp=bGS+b854; 
-            gdata[1]->SetPoint(i,-Ex,btemp/bAll); 
-            gdata[1]->SetPointEYhigh(i,(b854+e854)/(bAll+e854)-b854/bAll); 
-            gdata[1]->SetPointEYlow(i,b854/bAll-(b854-e854)/(bAll-e854));
-            gdata[1]->SetPointEXhigh(i,err/2.);
-            gdata[1]->SetPointEXlow(i,err/2.); 
+        if(b1561>0.0) {btemp=bGS+b854+b1561; g1561->SetPoint(i,-Ex,btemp/bAll); 
+            g1561->SetPointEYhigh(i,(b1561+e1561)/(bAll+e1561)-b1561/bAll); g1561->SetPointEYlow(i,b1561/bAll-(b1561-e1561)/(bAll-e1561)); 
         }
-        if(b1561>0.0) {
-            btemp=bGS+b854+b1561; 
-            gdata[2]->SetPoint(i,-Ex,btemp/bAll); 
-            gdata[2]->SetPointEYhigh(i,(b1561+e1561)/(bAll+e1561)-b1561/bAll); 
-            gdata[2]->SetPointEYlow(i,b1561/bAll-(b1561-e1561)/(bAll-e1561));
-            gdata[2]->SetPointEXhigh(i,err/2.);
-            gdata[2]->SetPointEXlow(i,err/2.); 
+        if(b854>0.0) {btemp=bGS+b854; g854->SetPoint(i,-Ex,btemp/bAll); 
+            g854->SetPointEYhigh(i,(b854+e854)/(bAll+e854)-b854/bAll); g854->SetPointEYlow(i,b854/bAll-(b854-e854)/(bAll-e854)); 
         }
+
+        for(int j=0;j<ncol;j++) dummy.push_back(stod(bgtS.at(i).at(j)));
+        dummy.push_back(bAll);
+        bgt.push_back(dummy);
+        dummy.clear();
+        
     }
-
 
     
     FileReader fl(filename_);
@@ -201,14 +163,10 @@ void doorway(const char *filename_){
     DWfunc f9;
     DWfunc f5;
 
-    TGraph *gcalc[nFiles][3];
-
     TH1F *hrel[nFiles][3];
     TH1F *habs[nFiles][3];
-    
     int lc[3] = {kCyan-9,kGreen-9,kRed-9};
-    int ld[3] = {kAzure+5,kCyan-9,kTeal-1};
-    //int ld[3] = {kGreen+3,kGreen-8,kGreen-5};
+    int ld[3] = {kCyan+3,kCyan-7,kCyan-3};
     //int ld[3] = {kBlue,kGreen+3,kRed+2};
     
     TF1 *ff[3];
@@ -217,15 +175,7 @@ void doorway(const char *filename_){
     THStack *ha[nFiles];
     int spin;
 
-    //ofstream outF;
-
-    double lX = minE;
-    double hX = maxE;
-    
-    int nBins = (hX-lX)/dx;
-    double itg[4];
-    double gams[4] = {0,0.854,1.561,2.004};
-    double t_itg;
+    ofstream outF;
 
     for (int f=0;f<nFiles;f++){
         npeaks=0;
@@ -243,9 +193,9 @@ void doorway(const char *filename_){
         hs[f] = new THStack(Form("hJ%d",spin),Form("J %d-",spin));
         ha[f] = new THStack(Form("hJ%d",spin),Form("J %d-",spin));
         
-        //outF.open(Form("output/TSV/Doorway_J%dm.tsv",spin));
+        outF.open(Form("output/TSV/Doorway_J%dm.tsv",spin));
         //outF << spin << "\t7/2\t3/2\t9/2" << endl;
-        //outF << std::fixed ;
+        outF << std::fixed ;
 
         while(!fr.EoF()){
         vector<string> finfo = fr.GetRow();
@@ -294,66 +244,51 @@ void doorway(const char *filename_){
         if (kVerbose) cout << "Number of Functions: 7/2: " << ngs << ", 3/2: " << n3 << ", 9/2: " << n9 << endl;
         //cout << "Number of Functions: 7/2: " << fgs.GetNF() << ", 3/2: " << f3.GetNF() << ", 9/2: " << f9.GetNF() << endl;
 
+        double lX = 6;
+        double hX = 8.5;
+        
+        int nBins = (hX-lX)/dx;
+
+        double itg[4];
+        double gams[4] = {0,0.854,1.561,2.004};
+        double t_itg;
         for(int k=0;k<3;k++) {
             hrel[f][k] = new TH1F(Form("h%d_j%d",k,spin),Form("h%d_j%d",k,spin),nBins,-hX,-lX);
-            if(gShade) hrel[f][k]->SetFillColorAlpha(ld[k],0.65); 
+            hrel[f][k]->SetFillColor(ld[k]); 
             hrel[f][k]->SetLineColor(ld[k]);
-
-            gcalc[f][k] = new TGraph();
-            gcalc[f][k]->SetName(Form("g%d_s%d",k,spin));
-            gcalc[f][k]->SetLineColor(ld[k]);
-            gcalc[f][k]->SetLineWidth(1);
-            gcalc[f][k]->SetFillColor(ld[k]);
-            //if(gShade) gcalc[f][k]->SetFillColorAlpha(ld[k],0.25);
-            gcalc[f][k]->SetPoint(0,-minE,0);
 
             habs[f][k] = new TH1F(Form("habs%d_j%d",k,spin),Form("habs%d_j%d",k,spin),nBins,-hX,-lX);
             habs[f][k]->SetFillColor(ld[k]); 
             habs[f][k]->SetLineColor(ld[k]);
         
         }
-
-        double xlo;
-        double xhi;
-        double xmid;
-        
         for(int i=1;i<=nBins;i++){
-            xlo = lX+dx*(i-1);
-            xhi = xlo+dx;
-            xmid = xlo+dx/2.0;
-            //xmid = lX+dx*(i-1);
-            
-            if(xmid>(gams[0]+3.62)){
-                //itg[0] = fgs(xmid);
+           double xlo = lX+dx*(i-1);
+           double xhi = xlo+dx;
+           double xmid = xlo+dx/2.0;
+           
+            if(xlo>(gams[0]+3.62)){
                 itg[0] = (fgs(xlo)+fgs(xmid)+fgs(xhi))*dx/3.0;
-                if(xmid>(gams[1]+3.62)){
-                    //itg[1] = f3(xmid); 
+                if(xlo>(gams[1]+3.62)){
                     itg[1] = (f3(xlo)+f3(xmid)+f3(xhi))*dx/3.0;
-                    if(xmid>(gams[2]+3.62)){
-                        //itg[2] = f9(xmid); 
+                    if(xlo>(gams[2]+3.62)){
                         itg[2] = (f9(xlo)+f9(xmid)+f9(xhi))*dx/3.0;
-                        if(xmid>(gams[3]+3.62))
-                            //itg[3] = f5(xmid); 
+                        if(xlo>(gams[3]+3.62))
                             itg[3] = (f5(xlo)+f5(xmid)+f5(xhi))*dx/3.0;
                     }
                 }
             }
-            //outF << std::setprecision(4) << hrel[f][0]->GetBinCenter(i); 
+            outF << std::setprecision(4) << hrel[f][0]->GetBinCenter(i); 
             t_itg = itg[0]+itg[1]+itg[2];
-            double itg_temp = 0;
             for (int k=0;k<3;k++){ 
-                itg_temp += itg[k];
-                gcalc[f][k]->SetPoint(i,-xmid,itg_temp/t_itg);
                 hrel[f][k]->SetBinContent(hrel[f][k]->FindBin(-xmid),itg[k]/t_itg); habs[f][k]->SetBinContent(habs[f][k]->FindBin(-xmid),itg[k]);
-                //if(itg[k]>0.0) outF << std::setprecision(8) << "\t" << itg[k];
-                //else outF << std::setprecision(8) << "\t" << 0.00000001;
+                if(itg[k]>0.0) outF << std::setprecision(8) << "\t" << itg[k];
+                else outF << std::setprecision(8) << "\t" << 0.00000001;
                 itg[k]=0.0;
             }
-            //outF << endl;
+            outF << endl;
         }
-            for(int k=0;k<3;k++)
-                gcalc[f][k]->SetPoint(nBins+1,-xmid,0);
-            //outF.close();
+            outF.close();
     }
 
     ff[0] = new TF1("f0",fgs,4,10,0); ff[0]->SetLineColor(lc[0]); ff[0]->SetNpx(5000);
@@ -362,20 +297,11 @@ void doorway(const char *filename_){
 
     if (kVerbose) cout << "Stacking Histograms..." << endl;
 
-    TCanvas *c1 = new TCanvas("c1","c1",1000,700);
-
-    TFile *outF = new TFile("output/files/Doorway.root","RECREATE");
-
-    for (int i=0;i<nFiles;i++){
-        for(int j=0;j<nstates;j++){
-            gcalc[i][j]->Write();
-        }
-    }
-    
-    outF->Close();
+    TCanvas *c1 = new TCanvas();
 
     if(cType==1){
 
+        //TCanvas *c1 = new TCanvas();
         if(nFiles<3) c1->Divide(1,nFiles);
         else c1->Divide(2,ceil(nFiles/2.));
 
@@ -383,90 +309,75 @@ void doorway(const char *filename_){
             
             c1->cd(i+1);
             c1->GetPad(i+1)->SetFrameLineColor(kWhite);
-            
-            gcalc[i][2]->GetXaxis()->SetLimits(-maxE,-minE);
-            gcalc[i][2]->GetXaxis()->SetRangeUser(-maxE,-minE);
-            gcalc[i][2]->GetXaxis()->SetLabelSize(0.06);
-            gcalc[i][2]->GetXaxis()->SetLabelOffset(0.05);
-            gcalc[i][2]->GetXaxis()->SetNdivisions(508);
-            gcalc[i][2]->GetYaxis()->SetLabelSize(0.06);
+            hs[i]->Add(hrel[i][0]); hs[i]->Add(hrel[i][1]); hs[i]->Add(hrel[i][2]);
 
-            gcalc[i][2]->Draw("AF");
-            gcalc[i][1]->Draw("F same");
-            gcalc[i][0]->Draw("F same");
 
-            //for(int j=0;j<nstates;j++){
-            //    gdata[j]->Draw("P5 same");
-            //}
+            hs[i]->Draw();
+            hs[i]->GetXaxis()->SetLabelSize(0.06);
+            hs[i]->GetXaxis()->SetLabelOffset(0.04);
+            hs[i]->GetXaxis()->SetNdivisions(508);
+            hs[i]->GetYaxis()->SetLabelSize(0.06);
+
+            gGS->DrawClone("same P");
+            g1561->DrawClone("same P");
+            g854->DrawClone("same P");
+
         }
 
         c1->SaveAs("output/canvases/Doorway_Rel.root");
-        c1->SaveAs("output/pdfs/Doorway_Rel.pdf");
-       
+
+
+        /* for(int i=0;i<nFiles;i++){
+            c1->cd(i+1);
+            c1->GetPad(i+1)->SetLogy();
+            c1->GetPad(i+1)->SetFrameLineColor(kWhite);
+            ha[i]->Add(habs[i][0]); ha[i]->Add(habs[i][2]); ha[i]->Add(habs[i][1]);
+
+            ha[i]->Draw();
+            ha[i]->GetXaxis()->SetLabelSize(0.12);
+            ha[i]->GetYaxis()->SetLabelSize(0.1);
+        }
+        c1->SaveAs("output/canvases/Doorway_Abs.root"); */
     }
     else if (cType==2){
 
-        c1->Divide(1,2);
-        
-        TLegend *ll[nFiles];
+        //TCanvas *c1 = new TCanvas();
+        c1->Divide(2,1);
         
         for(int i=0;i<nFiles;i++){
-
-            ll[i] = new TLegend(0.4,0.9,0.6,1.0);
-            ll[i]->SetNColumns(3);
-
+            
             c1->cd(1);
             c1->GetPad(1)->SetFrameLineColor(kWhite);
-            
-            gcalc[i][2]->GetXaxis()->SetLimits(-maxE,-minE);
-            gcalc[i][2]->GetXaxis()->SetRangeUser(-maxE,-minE);
-            gcalc[i][2]->GetXaxis()->SetLabelSize(0.06);
-            gcalc[i][2]->GetXaxis()->SetNdivisions(508);
-            gcalc[i][2]->GetXaxis()->SetLabelOffset(0.05);
-            gcalc[i][2]->GetXaxis()->SetLabelColor(kWhite);
-            //gcalc[i][2]->GetXaxis()->SetAxisColor(kWhite);
-            gcalc[i][2]->GetYaxis()->SetLabelSize(0.06);
-            gcalc[i][2]->GetYaxis()->SetLabelColor(kWhite);
-            //gcalc[i][2]->GetYaxis()->SetAxisColor(kWhite);
-            gcalc[i][2]->GetYaxis()->SetRangeUser(0,1.3);
+            hs[i]->Add(hrel[i][0]); hs[i]->Add(hrel[i][1]); hs[i]->Add(hrel[i][2]);
 
-            gcalc[i][2]->Draw("AF");
-            gcalc[i][1]->Draw("F same");
-            gcalc[i][0]->Draw("F same");
+            hs[i]->Draw();
+            hs[i]->GetXaxis()->SetLabelSize(0.06);
+            hs[i]->GetXaxis()->SetNdivisions(508);
+            hs[i]->GetYaxis()->SetLabelSize(0.06);
 
-            for(int j=0;j<nstates;j++){
-                ll[i]->AddEntry(gcalc[i][j],Form("%d/2-",spins[j]),"f");
-            //    gdata[j]->Draw("P5 same");
-            }
-            ll[i]->Draw();
-            
-            gPad->RedrawAxis();
-            
-            //TGaxis *xx = new TGaxis(-8.5,0,-6,0,-8.5,-6,508);
-            //xx->SetLabelSize(0.06);
-            //xx->SetNdivisions(508);
-            //xx->SetLabelOffset(0.05);
-
-            //TGaxis *yy = new TGaxis(-8.5,0,-8.5,1.3,0,1.3,510,"S");
-            //yy->SetLabelSize(0.06);
-            //yy->SetTickLength(0.01);
-
-            //xx->Draw();
-            //yy->Draw();
-
+            gGS->DrawClone("same P");
+            g1561->DrawClone("same P");
+            g854->DrawClone("same P");
 
             c1->cd(2);
             c1->GetPad(2)->SetLogy();
             c1->GetPad(2)->SetFrameLineColor(kWhite);
-            
+            //ha[i]->Add(habs[i][0]); ha[i]->Add(habs[i][2]); ha[i]->Add(habs[i][1]);
+
+            /* habs[i][0]->SetFillColorAlpha(kBlue,0.5);
+            habs[i][1]->SetFillColorAlpha(kGreen+1,0.5);
+            habs[i][2]->SetFillColorAlpha(kRed+1,0.5); */
+
             habs[i][0]->Draw();
             habs[i][1]->Draw("same");
             habs[i][2]->Draw("same");
 
-            
+            //ha[i]->Draw();
+            //ha[i]->GetXaxis()->SetLabelSize(0.12);
+            //ha[i]->GetYaxis()->SetLabelSize(0.1);
+        
             c1->SaveAs(Form("output/canvases/Doorway_%s.root",hs[i]->GetName()));
-            c1->SaveAs(Form("output/pdfs/Doorway_%s.pdf",hs[i]->GetName()));
-            
+            //c1->SaveAs(Form("output/images/Doorway_%s.png",hs[i]->GetName()));
         }
     }
     
@@ -474,7 +385,7 @@ void doorway(const char *filename_){
     c1->Write();
     for (int i=0;i<nFiles;i++)
         for (int k=0;k<3;k++){
-            //hrel[i][k]->Write();
+            hrel[i][k]->Write();
             habs[i][k]->Write();
             if(i==0) ff[k]->Write();
         }
@@ -484,6 +395,69 @@ void doorway(const char *filename_){
     fr.Reset();
     return;
 
+    /*
+    //Make bin array for histograms
+    const int nXbins = states.size();
+    
+    if (kVerbose) cout << "Stacking Histograms..." << endl;
+
+    TCanvas *c1 = new TCanvas();
+    c1->Divide(2,ceil(nSpins/2.));
+    
+
+    c1->SaveAs("c1_test.root");
+    
+    //double chi[nSpins];
+
+    vector<pair<double,pair<double,double>>> GTPair;
+    vector<pair<double,pair<double,double>>> FFPair;
+    double xi2GT, xi2FF;
+
+    //TFile *fOut = new TFile("SummaryHists.root","RECREATE");
+    FILE *outF = fopen("chi2Vals.tsv","w");
+    fprintf(outF,"Spin\tGT\tFF\n");
+    
+    for(int j=0; j<nSpins;j++){
+        GTPair.clear();
+        FFPair.clear();
+        xi2GT=-9999; xi2FF=-9999;
+
+        if(kVerbose) cout << "Calculating Chi2 for Spin J=" << j << endl;
+        
+        for(int i=0; i<bgt.size(); i++){
+        double Ex=bgt.at(i).at(0);
+        double bAll=bgt.at(i).at(7);
+        int binID=hCalc[0][j]->FindBin(Ex);
+        
+        for(int k=0;k<3;k++){
+            if(Ex>6.8&&Ex<8){
+                if(bgt.at(i).at(2*k+1)>0.0)
+                    GTPair.push_back(make_pair(hCalc[k][j]->GetBinContent(binID),make_pair(bgt.at(i).at(2*k+1)/bAll,bgt.at(i).at(2*k+2)/bgt.at(i).at(2*k+1))));
+                
+               
+            }
+            else{
+                if(bgt.at(i).at(2*k+1)>0.0)
+                    FFPair.push_back(make_pair(hCalc[k][j]->GetBinContent(binID),make_pair(bgt.at(i).at(2*k+1)/bAll,bgt.at(i).at(2*k+2)/bgt.at(i).at(2*k+1))));
+                
+                }
+        }
+        }
+            if(kErr){
+                if(GTPair.size()>0) xi2GT = chi2Err(GTPair);
+                if(FFPair.size()>0) xi2FF = chi2Err(FFPair);
+            }
+            else{
+                if(GTPair.size()>0) xi2GT = chi2Calc(GTPair);
+                if(FFPair.size()>0) xi2FF = chi2Calc(FFPair);
+            }
+        fprintf(outF,"J%d\t%.2f\t%.2f\n", j, xi2GT,xi2FF);
+        if(kVerbose) printf("GT X^2/Ndf: %.2f, FF X^2/Ndf: %.2f\n", j, xi2GT, xi2FF);
+    }
+    
+    fclose(outF);
+
+    return; */
 }
 
 double chi2Calc(vector<pair<double,pair<double,double>>> pIn){
@@ -516,13 +490,9 @@ int main(int argc, char **argv){
   optionHandler handler;
   handler.add(optionExt("debug",optional_argument, NULL,'d',"","Turn on verbose output"));
   handler.add(optionExt("delta",required_argument, NULL,'D',"","Set Histogram Bin Width in MeV (Must be able to factor 6 MeV)"));
-  handler.add(optionExt("err",optional_argument, NULL,'X',"","Calculate Chi2 Fit Error"));
+  handler.add(optionExt("err",optional_argument, NULL,'E',"","Calculate Chi2 Fit Error"));
   handler.add(optionExt("thresh",required_argument, NULL,'T',"","Set Threshold for Spectroscopic Factors"));
   handler.add(optionExt("canvas",required_argument, NULL,'c',"","Differentiate between canvas styles for histograms.\n                                          (1) Relative and Absolute stacked histograms on separate canvases.\n                                          (2) Relative and Absolute hists on same canvas for each level"));
-  handler.add(optionExt("minE",required_argument, NULL,'e',"","Minimum energy to plot"));
-  handler.add(optionExt("maxE",required_argument, NULL,'E',"","Maximum energy to plot"));
-  handler.add(optionExt("shade",optional_argument, NULL,'S',"","Make plot fills transparent"));
-  
 
   
   if (argc<2) {cout << "Incorrect number of arguments. Usage:\n";
@@ -553,6 +523,7 @@ int main(int argc, char **argv){
   if(handler.getOption(3)->active){
     fThresh = stoi(handler.getOption(3)->argument);
     thresh = pow(10,-1.0*fThresh);
+    cout << "Setting SF threshold to " << thresh << endl;
   }
 
   if(handler.getOption(4)->active){
@@ -560,21 +531,6 @@ int main(int argc, char **argv){
     //gStyle->SetCanvasPreferGL(true);
     cout << "Setting Canvas Style " << cType << endl;
   }
-
-  if(handler.getOption(5)->active){
-    double _minE = stod(handler.getOption(5)->argument);
-    if(_minE>4) 
-        minE = _minE;
-  }
-
-  if(handler.getOption(6)->active){
-    double _maxE = stod(handler.getOption(6)->argument);
-    if(_maxE<10)
-        maxE=_maxE;
-  }
-
-  if(handler.getOption(7)->active)
-    gShade=true;
 
   const char* filename = argv[argc-1];
   doorway(filename);

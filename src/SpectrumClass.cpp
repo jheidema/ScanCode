@@ -17,7 +17,7 @@
 using namespace std;
 
 
-const TGraph *vEff = Efficiencies::VandleEff();
+const TGraph *vEff = Efficiencies::VandleSourceEff();
 
 const double mn = 939.57; //MeV/c^2
 const double c = 29.98; //cm/ns

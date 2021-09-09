@@ -1,0 +1,367 @@
+Warning in cling::IncrementalParser::CheckABICompatibility():
+  Possible C++ standard library mismatch, compiled with __GLIBCXX__ '20180720'
+  Extraction of runtime standard library version was: '20181206'
+No output name provided. Using default "fund_output.root"
+---Input Info---
+---Reading from HF_files.txt
+---Outputing to func_output.root
+---Opening Config file Configs/Config_spec.txt
+ConfigReader::Import: Reading Config File
+[CONFIG LINE] RootHist Hists/In134_nToF_dual500ps.root
+[CONFIG LINE] LevelInfo FitInfo/In134peaks_sorted.txt
+[CONFIG LINE] GSFlag false
+[CONFIG LINE] GSFit true
+[CONFIG LINE] GSFloat true
+[CONFIG LINE] GammaNuFit true
+[CONFIG LINE] FitTail false
+[CONFIG LINE] DrawDist true
+[CONFIG LINE] DrawFuncs true
+[CONFIG LINE] FuncFile FitInfo/functions.txt
+---Setting neutron peaks from FitInfo/In134peaks_sorted.txt
+---Applying to histogram from Hists/In134_nToF_dual500ps.root
+
+
+File #HFCalculations/StatModel/6882/in134_6.80j6.0.out does not exist.
+File #HFCalculations/StatModel/7318/in134_7.3j6.0.out does not exist.
+File #HFCalculations/StatModel/7707/in134_7.7j6.0.out does not exist.
+OBJ: THashList	THashList	Doubly linked list with hashtable for lookup : 0
+ KEY: TH1D	h1;1	h1
+ KEY: TH1D	h0;1	h0
+Please enter key for histogram of interest [default='h1']
+Histogram Type: TH1D
+Info in ROOT::Math::ParameterSettings>: lower/upper bounds outside current parameter value. The value will be set to (low+up)/2 
+Info in ROOT::Math::ParameterSettings>: lower/upper bounds outside current parameter value. The value will be set to (low+up)/2 
+Info in ROOT::Math::ParameterSettings>: lower/upper bounds outside current parameter value. The value will be set to (low+up)/2 
+Info in ROOT::Math::ParameterSettings>: lower/upper bounds outside current parameter value. The value will be set to (low+up)/2 
+7 background parameters
+Opening FitInfo/In134peaks_sorted.txt
+Adjusting amplitude for different bin width. [Scale=0.666667]
+[FileReader::LoadFile] Loading Summary File: FitInfo/functions.txt
+[FILE READER (FitInfo/functions.txt)]: nufunc  34  20
+[FILE READER (FitInfo/functions.txt)]: nufunc  51  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  59  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  62  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  65  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  67  25
+[FILE READER (FitInfo/functions.txt)]: nufunc  70  100
+[FILE READER (FitInfo/functions.txt)]: nufunc  79  15
+[FILE READER (FitInfo/functions.txt)]: nufunc  86  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  91  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  94  50
+[FILE READER (FitInfo/functions.txt)]: nufunc  104 100
+[FILE READER (FitInfo/functions.txt)]: nufunc  108.5 50
+[FILE READER (FitInfo/functions.txt)]: nufunc  111 50
+[FILE READER (FitInfo/functions.txt)]: nufunc  119 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  126 20
+[FILE READER (FitInfo/functions.txt)]: nufunc 	136 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  144 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  160 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  175 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  205 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  225 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  264 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  277 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  295 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  340 20
+[FILE READER (FitInfo/functions.txt)]: nufunc  385 20
+Loaded File FitInfo/functions.txt
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 34 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 51 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 59 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 62 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 65 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 67 25
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 70 100
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 79 15
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 86 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 91 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 94 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 104 100
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 108.5 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 111 50
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 119 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 126 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 136 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 144 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 160 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 175 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 205 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 225 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 264 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 277 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 295 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 340 20
+[FULLSPECFUNC::ADDFUNCS] >> nufunc 385 20
+132 Parameters
+Gamma Gated: 50	 GS: 28
+TOF Gate: 0.5	Float Gate: 0.25
+Setting Gamma Nu peak: 35.84 45.4228
+Setting Gamma Nu peak: 34.85 13.6375
+Setting Gamma Nu peak: 39.35 14.6277
+Setting Gamma Nu peak: 36.57 21.8199
+Setting Gamma Nu peak: 40.1 8.40976
+Setting Gamma Nu peak: 45.49 114.327
+Setting Gamma Nu peak: 48.75 157.825
+Setting Gamma Nu peak: 43.1 36.5938
+Setting Gamma Nu peak: 53.29 269.458
+Setting Gamma Nu peak: 45.35 6.59144
+Setting Gamma Nu peak: 55.22 118.176
+Setting Gamma Nu peak: 47.19 47.9584
+Setting Gamma Nu peak: 57.59 28.1006
+Setting Gamma Nu peak: 61.91 20.0168
+Setting Gamma Nu peak: 65.5 13.0879
+Setting Gamma Nu peak: 70.53 15.0126
+Setting Gamma Nu peak: 75.73 10.3934
+Setting Gamma Nu peak: 80.6 15.0126
+Setting Gamma Nu peak: 82.9 31.95
+Setting Gamma Nu peak: 85.46 25.406
+Setting Gamma Nu peak: 70.86 5.90956
+Setting Gamma Nu peak: 80.01 15.4558
+Setting Gamma Nu peak: 84.37 1.81833
+Setting Gamma Nu peak: 87.72 6.81873
+Setting Gamma Nu peak: 96.35 15.4558
+Setting GS Peak: 30.4694 35.1047
+Setting GS Peak: 31.833 13.7323
+Setting GS Peak: 33.1301 20.123
+Setting GS Peak: 35.5878 7.97444
+Fixing GS Peak: 37.3139 133.964
+Fixing GS Peak: 38.3279 225.985
+Fixing GS Peak: 40.066 165.84
+Fixing GS Peak: 40.8188 22.9512
+Setting GS Peak: 41.9861 16.0914
+Setting GS Peak: 43.5569 10.215
+Setting GS Peak: 44.7333 11.664
+Setting GS Peak: 45.9826 7.71096
+Setting GS Peak: 47.0014 10.7092
+Setting GS Peak: 60.7342 10.9358
+Setting Added Peak: 34 20
+Setting Added Peak: 51 50
+Setting Added Peak: 59 50
+Setting Added Peak: 62 50
+Setting Added Peak: 65 50
+Setting Added Peak: 67 25
+Setting Added Peak: 70 100
+Setting Added Peak: 79 15
+Setting Added Peak: 86 50
+Setting Added Peak: 91 50
+Setting Added Peak: 94 50
+Setting Added Peak: 104 100
+Setting Added Peak: 108.5 50
+Setting Added Peak: 111 50
+Setting Added Peak: 119 20
+Setting Added Peak: 126 20
+Setting Added Peak: 136 20
+Setting Added Peak: 144 20
+Setting Added Peak: 160 20
+Setting Added Peak: 175 20
+Setting Added Peak: 205 20
+Setting Added Peak: 225 20
+Setting Added Peak: 264 20
+Setting Added Peak: 277 20
+Setting Added Peak: 295 20
+Setting Added Peak: 340 20
+Setting Added Peak: 385 20
+
+****************************************
+Minimizer is Minuit / Migrad
+Chi2                      =      652.414
+NDf                       =          631
+Edm                       =  7.99522e-06
+NCalls                    =        41447
+fGN0_t0                   =        35.84                      	 (fixed)
+fGN0_A                    =      34.0671   +/-   2.09195      	 (limited)
+fGN1_t0                   =        34.85                      	 (fixed)
+fGN1_A                    =      17.0468   +/-   5.74101      	 (limited)
+fGN2_t0                   =        39.35                      	 (fixed)
+fGN2_A                    =      10.9708   +/-   5.4298       	 (limited)
+fGN3_t0                   =        36.57                      	 (fixed)
+fGN3_A                    =      16.3649   +/-   10.9079      	 (limited)
+fGN4_t0                   =         40.1                      	 (fixed)
+fGN4_A                    =      10.3613   +/-   3.10531      	 (limited)
+fGN5_t0                   =        45.49                      	 (fixed)
+fGN5_A                    =      125.123   +/-   46.3709      	 (limited)
+fGN6_t0                   =        48.75                      	 (fixed)
+fGN6_A                    =      197.281   +/-   5.61883      	 (limited)
+fGN7_t0                   =         43.1                      	 (fixed)
+fGN7_A                    =      27.4476   +/-   1.80657      	 (limited)
+fGN8_t0                   =        53.29                      	 (fixed)
+fGN8_A                    =      208.865   +/-   10.1506      	 (limited)
+fGN9_t0                   =        45.35                      	 (fixed)
+fGN9_A                    =      4.94366   +/-   0.503409     	 (limited)
+fGN10_t0                  =        55.22                      	 (fixed)
+fGN10_A                   =      88.6323   +/-   3.14558      	 (limited)
+fGN11_t0                  =        47.19                      	 (fixed)
+fGN11_A                   =      46.7668   +/-   8.46354      	 (limited)
+fGN12_t0                  =        57.59                      	 (fixed)
+fGN12_A                   =      21.0755   +/-   9.12018      	 (limited)
+fGN13_t0                  =        61.91                      	 (fixed)
+fGN13_A                   =      25.0209   +/-   5.31862      	 (limited)
+fGN14_t0                  =         65.5                      	 (fixed)
+fGN14_A                   =      9.86375   +/-   3.39172      	 (limited)
+fGN15_t0                  =        70.53                      	 (fixed)
+fGN15_A                   =      18.7658   +/-   0.704782     	 (limited)
+fGN16_t0                  =        75.73                      	 (fixed)
+fGN16_A                   =      12.9917   +/-   0.736345     	 (limited)
+fGN17_t0                  =         80.6                      	 (fixed)
+fGN17_A                   =      11.2595   +/-   5.55005      	 (limited)
+fGN18_t0                  =         82.9                      	 (fixed)
+fGN18_A                   =      23.9625   +/-   0.921403     	 (limited)
+fGN19_t0                  =        85.46                      	 (fixed)
+fGN19_A                   =      19.0545   +/-   0.503313     	 (limited)
+fGN20_t0                  =        70.86                      	 (fixed)
+fGN20_A                   =      7.38695   +/-   0.637773     	 (limited)
+fGN21_t0                  =        80.01                      	 (fixed)
+fGN21_A                   =      11.5918   +/-   5.35366      	 (limited)
+fGN22_t0                  =        84.37                      	 (fixed)
+fGN22_A                   =      1.36375   +/-   0.645509     	 (limited)
+fGN23_t0                  =        87.72                      	 (fixed)
+fGN23_A                   =      5.11405   +/-   0.344706     	 (limited)
+fGN24_t0                  =        96.35                      	 (fixed)
+fGN24_A                   =      11.5918   +/-   0.367741     	 (limited)
+fGS0_t0                   =      30.2194   +/-   0.0212607    	 (limited)
+fGS0_A                    =      46.4649   +/-   7.18473      	 (limited)
+fGS1_t0                   =      31.8709   +/-   0.163069     	 (limited)
+fGS1_A                    =      30.4153   +/-   7.48956      	 (limited)
+fGS2_t0                   =      33.3801   +/-   0.373816     	 (limited)
+fGS2_A                    =      30.7639   +/-   12.0243      	 (limited)
+fGS3_t0                   =      35.3378   +/-   0.0501028    	 (limited)
+fGS3_A                    =      16.6611   +/-   13.5526      	 (limited)
+fGS4_t0                   =      37.3139                      	 (fixed)
+fGS4_A                    =      165.152   +/-   17.9449      	 (limited)
+fGS5_t0                   =      38.3279                      	 (fixed)
+fGS5_A                    =       216.64   +/-   22.2297      	 (limited)
+fGS6_t0                   =       40.066                      	 (fixed)
+fGS6_A                    =      395.055   +/-   28.9081      	 (limited)
+fGS7_t0                   =      40.8188                      	 (fixed)
+fGS7_A                    =      13.6669   +/-   29.6959      	 (limited)
+fGS8_t0                   =      42.1324   +/-   0.296449     	 (limited)
+fGS8_A                    =      126.077   +/-   27.7028      	 (limited)
+fGS9_t0                   =      43.3723   +/-   0.288544     	 (limited)
+fGS9_A                    =      36.3806   +/-   28.5974      	 (limited)
+fGS10_t0                  =      44.9833   +/-   0.399437     	 (limited)
+fGS10_A                   =      45.3011   +/-   53.1663      	 (limited)
+fGS11_t0                  =      46.2326   +/-   0.491098     	 (limited)
+fGS11_A                   =      11.4674   +/-   32.2749      	 (limited)
+fGS12_t0                  =      47.1669   +/-   0.366934     	 (limited)
+fGS12_A                   =      154.204   +/-   18.7541      	 (limited)
+fGS13_t0                  =      60.6679   +/-   0.106501     	 (limited)
+fGS13_A                   =      49.8488   +/-   32.7404      	 (limited)
+fNF0_t0                   =        34.51   +/-   0.636471     	 (limited)
+fNF0_A                    =      38.0808   +/-   16.209       	 (limited)
+fNF1_t0                   =      50.9666   +/-   0.125206     	 (limited)
+fNF1_A                    =       183.32   +/-   12.4622      	 (limited)
+fNF2_t0                   =      59.1695   +/-   0.431474     	 (limited)
+fNF2_A                    =      57.0326   +/-   20.5024      	 (limited)
+fNF3_t0                   =      62.4847   +/-   0.506219     	 (limited)
+fNF3_A                    =      58.7317   +/-   18.5474      	 (limited)
+fNF4_t0                   =      65.0616   +/-   0.366239     	 (limited)
+fNF4_A                    =      102.282   +/-   22.8428      	 (limited)
+fNF5_t0                   =      67.3218   +/-   0.701292     	 (limited)
+fNF5_A                    =      53.5958   +/-   21.1814      	 (limited)
+fNF6_t0                   =      70.1765   +/-   0.276874     	 (limited)
+fNF6_A                    =      104.202   +/-   14.2006      	 (limited)
+fNF7_t0                   =       77.815   +/-   0.170185     	 (limited)
+fNF7_A                    =      34.0952   +/-   6.36473      	 (limited)
+fNF8_t0                   =      87.0576   +/-   0.540208     	 (limited)
+fNF8_A                    =      21.0364   +/-   5.14989      	 (limited)
+fNF9_t0                   =      92.1901   +/-   2.12931      	 (limited)
+fNF9_A                    =      18.8298   +/-   9.28448      	 (limited)
+fNF10_t0                  =       95.302   +/-   1.74646      	 (limited)
+fNF10_A                   =      23.7809   +/-   8.76477      	 (limited)
+fNF11_t0                  =      104.044   +/-   0.50441      	 (limited)
+fNF11_A                   =       34.674   +/-   4.24369      	 (limited)
+fNF12_t0                  =      109.217   +/-   0.166889     	 (limited)
+fNF12_A                   =      23.8475   +/-   4.67612      	 (limited)
+fNF13_t0                  =      112.665   +/-   0.307896     	 (limited)
+fNF13_A                   =       26.977   +/-   4.587        	 (limited)
+fNF14_t0                  =      120.592   +/-   1.87817      	 (limited)
+fNF14_A                   =      21.2721   +/-   4.50575      	 (limited)
+fNF15_t0                  =      127.462   +/-   0.47491      	 (limited)
+fNF15_A                   =      21.4974   +/-   4.69682      	 (limited)
+fNF16_t0                  =      135.873   +/-   1.55187      	 (limited)
+fNF16_A                   =      8.73619   +/-   3.35668      	 (limited)
+fNF17_t0                  =      145.831   +/-   0.705885     	 (limited)
+fNF17_A                   =      21.6733   +/-   3.19886      	 (limited)
+fNF18_t0                  =      160.506   +/-   1.19028      	 (limited)
+fNF18_A                   =      15.3914   +/-   2.55859      	 (limited)
+fNF19_t0                  =      177.625   +/-   0.701158     	 (limited)
+fNF19_A                   =       18.742   +/-   2.23414      	 (limited)
+fNF20_t0                  =      201.925   +/-   0.983493     	 (limited)
+fNF20_A                   =      14.4814   +/-   1.87071      	 (limited)
+fNF21_t0                  =       224.03   +/-   2.066        	 (limited)
+fNF21_A                   =      14.6395   +/-   1.61168      	 (limited)
+fNF22_t0                  =       260.04   +/-   5.61223      	 (limited)
+fNF22_A                   =      9.39581   +/-   1.51303      	 (limited)
+fNF23_t0                  =      277.982   +/-   5.42763      	 (limited)
+fNF23_A                   =      1.27054   +/-   2.04429      	 (limited)
+fNF24_t0                  =      295.188   +/-   2.08221      	 (limited)
+fNF24_A                   =      12.7555   +/-   1.76739      	 (limited)
+fNF25_t0                  =      340.475   +/-   2.40631      	 (limited)
+fNF25_A                   =      9.37566   +/-   1.0411       	 (limited)
+fNF26_t0                  =      379.225   +/-   11.5494      	 (limited)
+fNF26_A                   =      8.39337   +/-   0.845771     	 (limited)
+0	9.26	35.84	1561	141.33	688.34	46.019	0.061	0.026
+1	8.79	34.85	854	84.58	403.21	136.070	0.337	0.022
+2	8.57	39.35	1561	45.01	235.90	116.765	0.495	0.006
+3	8.39	36.57	854	65.86	325.78	217.324	0.667	0.027
+4	7.76	40.10	854	41.91	223.03	66.859	0.300	0.006
+5	7.72	45.49	1561	456.76	2698.17	1000.121	0.371	0.007
+6	7.38	48.75	1561	698.09	4375.75	128.408	0.028	0.007
+7	7.30	43.10	854	106.07	598.82	39.619	0.066	0.007
+8	7.19	53.29	1561	721.16	4889.33	240.383	0.049	0.007
+9	7.03	45.35	854	18.08	106.55	10.875	0.102	0.007
+10	6.89	55.22	1561	295.98	2071.82	75.366	0.035	0.008
+11	6.83	47.19	854	167.60	1021.57	185.015	0.181	0.007
+12	6.77	57.59	1561	68.45	497.78	215.446	0.433	0.008
+13	6.60	61.91	1561	79.56	618.44	131.558	0.213	0.008
+14	6.39	65.50	1561	29.07	238.21	81.938	0.344	0.009
+15	6.24	70.53	1561	53.99	474.82	18.398	0.038	0.010
+16	6.10	75.73	1561	34.94	329.25	19.035	0.057	0.011
+17	6.00	80.60	1561	28.99	290.59	143.283	0.493	0.012
+18	5.95	82.90	1561	60.08	619.38	25.087	0.038	0.013
+19	5.91	85.46	1561	46.20	491.19	14.554	0.026	0.013
+20	5.53	70.86	854	21.18	187.10	16.254	0.086	0.010
+21	5.30	80.01	854	30.04	298.91	138.100	0.462	0.012
+22	5.22	84.37	854	3.35	35.17	16.654	0.473	0.013
+23	5.16	87.72	854	12.00	131.01	9.011	0.067	0.014
+24	5.05	96.35	854	26.34	316.65	11.103	0.032	0.015
+9.34	5.72	960.49	151.117	0.155	0.029
+8.77	5.15	675.54	167.205	0.246	0.025
+8.31	4.69	617.43	241.901	0.391	0.027
+7.81	4.19	355.41	289.232	0.813	0.025
+7.37	3.75	3457.75	382.037	0.109	0.020
+7.18	3.56	4649.32	477.983	0.103	0.006
+6.88	3.26	8465.67	621.874	0.073	0.006
+6.76	3.14	292.58	635.740	2.173	0.006
+6.56	2.94	2731.08	600.369	0.220	0.007
+6.40	2.78	789.01	620.233	0.786	0.007
+6.20	2.58	973.82	1142.916	1.174	0.007
+6.07	2.45	247.67	697.066	2.814	0.007
+5.97	2.35	3364.93	409.916	0.122	0.007
+5.04	1.42	1209.17	794.238	0.657	0.008
+8.01	4.39	826.17	352.257	0.426	0.025
+5.63	2.01	4128.28	282.312	0.068	0.007
+5.11	1.49	1351.86	486.099	0.359	0.008
+4.96	1.34	1438.93	454.572	0.316	0.008
+4.85	1.23	2490.99	556.747	0.223	0.009
+4.77	1.15	1320.03	521.822	0.395	0.009
+4.68	1.06	2623.27	358.373	0.136	0.010
+4.48	0.86	873.11	163.322	0.187	0.012
+4.31	0.69	534.60	131.080	0.245	0.014
+4.23	0.61	497.30	245.307	0.493	0.014
+4.20	0.58	643.08	237.210	0.369	0.015
+4.10	0.48	980.01	121.035	0.122	0.017
+4.06	0.44	701.60	138.142	0.196	0.018
+4.03	0.41	803.43	137.457	0.170	0.019
+3.98	0.36	662.44	141.058	0.212	0.022
+3.94	0.32	721.98	158.733	0.218	0.025
+3.90	0.28	332.68	128.177	0.384	0.029
+3.87	0.25	969.68	147.237	0.148	0.036
+3.82	0.20	929.41	160.982	0.166	0.049
+3.79	0.17	1704.24	235.329	0.119	0.070
+3.75	0.13	2542.82	432.944	0.129	0.111
+3.72	0.10	11130.93	2193.383	0.110	0.163
+3.70	0.08	60390.53	13187.253	0.161	0.147
+3.69	0.07	41148.55	66220.590	1.609	0.032
+N Added Functions: 27
+N Input Functions: 39

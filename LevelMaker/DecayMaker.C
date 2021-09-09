@@ -51,7 +51,7 @@ void LevelMaker(const char *fileName){
         string state = stInfo.at(i).first;
         Etot = stInfo.at(i).second + offsets[stInfo.at(i).first];
         if(Etot>ymax) ymax = Etot;        
-        ls[i] = new TLine(istate[state]+0.25,Etot,istate[state]+1,Etot);
+        ls[i] = new TLine(istate[state],Etot,istate[state]+0.5,Etot);
         if(stInfo.at(i).second==0.0) {
             ls[i]->SetLineWidth(4);  ls[i]->SetLineColor(kBlack);
             if(istate[state]!=0) {
@@ -97,7 +97,7 @@ void LevelMaker(const char *fileName){
     for (int i=1;i<nStates;i++)
         ls[i]->Draw("same");
     for (int i=1;i<isn;i++)
-        //lsn[i]->Draw("same");
+        lsn[i]->Draw("same");
 
  return;
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "TROOT.h"
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH1D.h"
@@ -8,6 +9,7 @@
 #include "TGraph.h"
 #include "TObject.h"
 #include "TCanvas.h"
+#include "TStyle.h"
 
 #include "FullFuncClass.hpp"
 #include "optionHandler.hpp"
@@ -17,6 +19,7 @@
 
 #include "dummyFuncs.hpp"
 #include "VandleEff.hpp"
+
 
 using namespace std;
 
@@ -170,11 +173,10 @@ int main(int argc, char **argv){
 
   TList *fKeys = fIn->GetListOfKeys();
   fKeys->ls();
-  std::string hname;
-  cout << "Please enter key for histogram of interest [default=\'h\']\n";
+  std::string hname = fKeys->At(0)->GetName();
+  cout << "Please enter key for histogram of interest [default=\'"<< hname << "\']\n";
   getline(cin,hname);
-    if(hname.empty()) hname = "h";
-
+  //if(hname.empty()) hname = "h";
   if(!(fKeys->Contains(hname.c_str()))) {
     cout << errstring << "Object " << hname << " does not exist.\nExiting....\n";
     return 1;
@@ -228,7 +230,8 @@ int main(int argc, char **argv){
 
   ///Making functions from HF calculations
   FullFuncClass sf;
-  TGraph *gEff = Efficiencies::VandleEff();
+  TGraph *gEff = Efficiencies::VandleSourceEff(); //Efficiency curve for analysis
+
   for (int i=0;i<HFBins.size();i++){
     double amp = HFspectra.at(i).at(1);
     if (amp>0.05){
@@ -244,14 +247,18 @@ int main(int argc, char **argv){
   fS->SetLineColor(kBlue);
 
     //Final corrections before writing to file
+  gStyle->SetOptStat(0);
   hIn->GetXaxis()->SetRangeUser(20,200);
   hIn->GetXaxis()->SetTitle("TOF (ns)");
-  hIn->GetYaxis()->SetRangeUser(0,1200);
-  hIn->GetYaxis()->SetTitle("Counts/0.75 ns");
+  double ymax =  hIn->GetBinContent(hIn->FindBin(40));
+  hIn->GetYaxis()->SetRangeUser(-10,ymax*1.15);
+  hIn->GetYaxis()->SetTitle(Form("Counts/%.2f ns",hIn->GetBinWidth(1)));
+  //hIn->GetYaxis()->SetTitle("Counts/0.75 ns");
   hIn->SetLineColor(kBlack);
   hIn->SetLineWidth(2);
   hIn->SetTitle(inputFilename.c_str());
 
+  
   TFile *fOut = new TFile(outputFilename.c_str(),"RECREATE");
   hIn->Write();
   fH->Write();
@@ -294,16 +301,29 @@ int main(int argc, char **argv){
   
   FILE *fBGT;
 
-  TGraph *verr = Efficiencies::VandleBeamErr();
+  TGraph *verr = Efficiencies::VandleSourceErr();
 
   TF1 *f1 = new TF1("f1",calcResponse,0,800,2);
 
   int ng=0;
+
   if(kPrintEn&&gsFit){
     fBGT = fopen("LevelIntensities.txt","w");
     
     map<double,pair<double,double>> GNInfo = ff.GetSpectrumGNInfo();
-    for (std::map<double,pair<double,double>>::iterator itm = GNInfo.begin(); itm!=GNInfo.end(); itm++){
+
+    for (std::map<double,pair<double,double>>::reverse_iterator itm = GNInfo.rbegin(); itm!=GNInfo.rend(); ++itm){
+      double Ex = itm->first;
+      double An = itm->second.second;
+      double gamE = itm->second.first;
+      double En = (Ex-gamE-3620)/1000.;
+      double ntof = fN->GetParameter(2*ng);
+      double newAn = fN->GetParameter((2*ng+1))*100./gEff->Eval(En);
+      double An_err = fN->GetParError((2*ng+1))*100./gEff->Eval(En);
+      f1->SetParameters(fN->GetParameter((2*ng)),fN->GetParameter((2*ng+1)));
+      double IntAn = f1->Integral(0,600)*100./gEff->Eval(En);
+
+    /*for (std::map<double,pair<double,double>>::iterator itm = GNInfo.begin(); itm!=GNInfo.end(); itm++){
       double Ex = itm->first;
       double An = itm->second.second;
       double gamE = itm->second.first;
@@ -312,19 +332,20 @@ int main(int argc, char **argv){
       double An_err = fN->GetParError(50-(2*ng+1))*100./gEff->Eval(En);
       f1->SetParameters(fN->GetParameter(50-(2*ng)),fN->GetParameter(50-(2*ng+1)));
       double IntAn = f1->Integral(0,600)*100./gEff->Eval(En);
-      
-      if(An_err<10000){
+       */
+      //if(An_err<10000){
       double p_err = An_err/newAn;
       double e_err = verr->Eval(En)/100.;
-      //An_err = sqrt(pow(p_err,2)+pow(verr->Eval(En)/100.,2))*newAn;
-      printf("%.2f\t%.0f\t%.2f\t%.2f\t%.3f\t%.2f\t%.2f\n",Ex/1000., gamE, newAn, IntAn, IntAn*p_err, p_err, e_err);
-      fprintf(fBGT,"%.2f\t%.0f\t%.2f\t%.2f\t%.3f\n",Ex/1000., gamE, newAn, IntAn, IntAn*p_err);
-      }
+      An_err = sqrt(pow(p_err,2)+pow(e_err,2))*IntAn;
+      printf("%d\t%.2f\t%.2f\t%.0f\t%.2f\t%.2f\t%.3f\t%.3f\t%.3f\n",ng, Ex/1000., ntof, gamE, newAn, IntAn, An_err, p_err, e_err);
+      fprintf(fBGT,"%.2f\t%.0f\t%.2f\t%.2f\t%.3f\n",Ex/1000., gamE, newAn, IntAn, An_err);
+      //}
       ng++;
     }
 
     int nf = fN->GetNpar()/2;
     int ni = ff.GetNGammaNuStates();
+
     for (int i=ni;i<nf;i++){
       double En = 0.5*mn/pow(c,2)*pow(100./fN->GetParameter(2*i),2);
       double An = fN->GetParameter(2*i+1)*100./gEff->Eval(En);
@@ -335,9 +356,10 @@ int main(int argc, char **argv){
       if(An_err<10000){
       double p_err = An_err/An;
       double e_err = verr->Eval(En)/100.;
-      //An_err = sqrt(pow(p_err,2)+pow(verr->Eval(En)/100.,2))*An;
-      printf("%.2f\t%.2f\t%.2f\t%.3f\t%.2f\t%.2f\n",En+3.62,En,IntAn,IntAn*p_err,p_err,e_err);
-      fprintf(fBGT,"%.2f\t%.2f\t%.2f\t%.3f\n",En+3.62,En,IntAn,IntAn*p_err);
+      An_err = sqrt(pow(p_err,2)+pow(e_err,2))*IntAn;
+      printf("%.2f\t%.2f\t%.2f\t%.3f\t%.3f\t%.3f\n",En+3.62,En,IntAn,An_err,p_err,e_err);
+      //fprintf(fBGT,"%.2f\t%.2f\t%.2f\t%.3f\n",En+3.62,En,IntAn,IntAn*p_err);
+      fprintf(fBGT,"%.2f\t%.2f\t%.2f\t%.3f\n",En+3.62,En,IntAn,An_err);
       }
     }
     fclose(fBGT);

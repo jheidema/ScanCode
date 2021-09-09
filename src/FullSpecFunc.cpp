@@ -6,6 +6,7 @@
 #include "TF1.h"
 #include "TFitResultPtr.h"
 #include "TFitResult.h"
+#include "TList.h"
 
 #include "BkgdFunc.hpp"
 #include "tofFuncClass.hpp"
@@ -115,7 +116,7 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn, bool kGNFit){
     double rlo,rhi;
     double told=0.0;
     double tnew=0.0;
-    double tgate = 0.250;
+    double tgate = 0.500;
     double fratio = 2.0;
 
     if(kVerbose && kFloatGS) cout << "TOF Gate: " << tgate << "\tFloat Gate: " << tgate/fratio << "\n"; 
@@ -128,6 +129,9 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn, bool kGNFit){
         if (is<nF) {
 
             fFit->FixParameter(2*is,tf.GetParam(2*(is)));
+            //fFit->SetParameter(2*is,tf.GetParam(2*(is)));
+            //fFit->SetParLimits(2*is,tf.GetParam(2*(is))-0.025,tf.GetParam(2*(is))+0.025);
+            
             if(!kGNFit){ 
                 fFit->FixParameter(2*is+1,tf.GetParam(2*(is)+1)*binScale);
                 if(kVerbose) cout << "Fixing Gamma Nu peak: " << tf.GetParam(2*(is)) << " " << tf.GetParam(2*(is)+1)*binScale << "\n";
@@ -135,14 +139,17 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn, bool kGNFit){
             else {
                 //fFit->SetParameter(2*is,tf.GetParam(2*(is)));
                 //fFit->SetParLimits(2*is,tf.GetParam(2*(is))-tgate/fratio,tf.GetParam(2*(is))+tgate/fratio);
-                fFit->SetParameter(2*is+1,tf.GetParam(2*(is)+1)*binScale);
-                fFit->SetParLimits(2*is+1,tf.GetParam(2*(is)+1)*binScale*0.5,tf.GetParam(2*(is)+1)*binScale*2.0);
+                fFit->SetParameter(2*is+1,tf.GetParam(2*(is)+1)*binScale*0.75);
+                fFit->SetParLimits(2*is+1,tf.GetParam(2*(is)+1)*binScale*0.75,tf.GetParam(2*(is)+1)*binScale*1.25);
                 if(kVerbose) cout << "Setting Gamma Nu peak: " << tf.GetParam(2*(is)) << " " << tf.GetParam(2*(is)+1)*binScale << "\n";
             }
             fFit->SetParName(2*is,Form("fGN%d_t0",is));
             fFit->SetParName(2*is+1,Form("fGN%d_A",is));
         }
-        //Adding Ground State Transitions calculated from Gamma Gated Levels
+        
+          //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//
+         //Adding Ground State Transitions calculated from Gamma Gated Levels//
+        //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//
         else if (is>=nF&&is<nF+nGS) {
             
             if((is-nF)==0) 
@@ -178,7 +185,10 @@ TF1* FullSpecFunc::GenerateFitFunc(TH1D* hIn, bool kGNFit){
             fFit->SetParName(2*is+1,Form("fGS%d_A",is-nF));
 
         }
-        //Adding additional neutron responses from input files
+
+         //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//
+         //Adding additional neutron responses from input files//
+        //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//
         else if (is>=nF+nGS){
             double tof=gf.n_tofs.at(is-(nF+nGS));
                 if (tof>tnew) tnew=tof;

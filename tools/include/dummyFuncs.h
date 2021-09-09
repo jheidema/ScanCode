@@ -238,3 +238,53 @@ double AbsHPGe_Eff(double x){
 
     return 0.75 * eff;
 }
+
+double bspectrum(double *x, double *p){
+    double xx=x[0];
+    double Z=p[0];
+    double Qb=p[1];
+
+    double me=0.511;
+    double pi=3.14159;
+    double e0 = 0.05526;
+    double hc = 0.197326/1.E6*1.E9;
+
+    //double pe = sqrt(xx*xx+2.*xx*me);
+    double EE = xx+me;
+    double ve = sqrt(1-pow(me/EE,2));
+
+    double eta=Z/(4.*pi*e0*hc*ve);
+    double F = (2.*pi*eta)/(1-exp(-2.*pi*eta));
+    
+    double val=0;
+    if(xx<Qb&&xx>=0.001) val = sqrt(xx*xx+2.*xx*me) * sqrt(1.-1.0E-6/pow(Qb-xx,2)) * pow(Qb-xx,2) * (xx+me);
+    
+
+    return val*F;
+}
+
+double rbspectrum(double *x, double *p){
+    double me=0.511;
+    double pi=3.14159;
+    double e0 = 0.05526;
+    double hc = 0.197326/1.E6*1.E9;
+        
+    double xx=x[0]*me;
+    double Z=p[0];
+    double Qb=p[1];
+
+
+
+    //double pe = sqrt(xx*xx+2.*xx*me);
+    double EE = xx+me;
+    double ve = sqrt(1-pow(me/EE,2));
+
+    double eta=Z/(4.*pi*e0*hc*ve);
+    double F = (2.*pi*eta)/(1-exp(-2.*pi*eta));
+    
+    double val=0;
+    if(xx<Qb&&xx>=0.001) val = sqrt(xx*xx+2.*xx*me) * sqrt(1.-1.0E-6/pow(Qb-xx,2)) * pow(Qb-xx,2) * (xx+me);
+    
+
+    return val*F;
+}
